@@ -1,22 +1,32 @@
 <template>
   <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+    <StoreAudit />
   </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue';
+import StoreAudit from '@/components/StoreAudit.vue';
 
 export default {
   name: 'App',
   components: {
-    HelloWorld,
+    StoreAudit,
   },
 };
 </script>
 
 <style>
+*,
+*::after,
+*::before {
+  margin: 0;
+  padding: 0;
+  box-sizing: inherit;
+}
+
+html {
+  font-size: 62.5%;
+}
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
