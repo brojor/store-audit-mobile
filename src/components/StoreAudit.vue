@@ -5,21 +5,23 @@
       <div @click="method1(index)" class="kategory-title">
         {{ kategory.name }}
       </div>
-      <div class="points" v-if="activeKategory === index">
-        <div
-          ref="trgt"
-          @touchstart="touchstart(i, $event)"
-          @touchend="touchend(i, $event)"
-          @touchmove="touchmove(i, $event)"
-          draggable="true"
-          class="point transformSlow"
-          v-for="(point, i) in kategory.points"
-          :key="i"
-          :point="point"
-        >
-          {{ point.name }}
+      <transition name="roll">
+        <div class="points" v-if="activeKategory === index">
+          <div
+            ref="trgt"
+            @touchstart="touchstart(i, $event)"
+            @touchend="touchend(i, $event)"
+            @touchmove="touchmove(i, $event)"
+            draggable="true"
+            class="point transformSlow"
+            v-for="(point, i) in kategory.points"
+            :key="i"
+            :point="point"
+          >
+            {{ point.name }}
+          </div>
         </div>
-      </div>
+      </transition>
     </div>
   </main>
 </template>
@@ -75,10 +77,23 @@ export default {
 </script>
 
 <style lang="css" scoped>
+.roll-enter-active,
+.roll-leave-active {
+  transition: all 0.5s;
+  max-height: 2000px;
+}
+.roll-enter,
+.roll-leave-to {
+  /*opacity: 0;*/
+  max-height: 0px;
+  /*opacity: 0;*/
+}
+
 main {
   width: 100vw;
   height: 100vh;
   overflow-x: hidden;
+  padding: 0.5rem;
 }
 h1 {
   font-size: 3rem;
@@ -87,14 +102,20 @@ h1 {
 
 .kategory {
   width: 100%;
-  /*border: 1px dashed green;*/
-  background-color: yellow;
+  border: 1px solid black;
+  border-top: 0;
+  border-radius: 0.5rem;
+  background-color: #eee;
+  overflow: hidden;
+  /*margin: 0 0.5rem;*/
+
+  /*margin: 2rem 0;*/
 }
 .kategory-title {
   background-color: yellow;
   padding: 1.5rem 0;
   /*border-bottom: 1px solid red;*/
-  border-bottom: 1px solid black;
+  /*border-bottom: 1px solid black;*/
   font-size: 1.8rem;
   font-weight: bold;
 }
