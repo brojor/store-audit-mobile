@@ -1,8 +1,10 @@
 <template>
   <main>
-    <h1>store audit</h1>
+    <h1>Store audit</h1>
     <div v-for="(kategory, index) in table" :key="index" class="kategory">
-      <div @click="method1(index)">{{ kategory.name }}</div>
+      <div @click="method1(index)" class="kategory-title">
+        {{ kategory.name }}
+      </div>
       <div class="points" v-if="activeKategory === index">
         <div
           ref="trgt"
@@ -66,25 +68,43 @@ export default {
       }
     },
     method1(index) {
-      this.activeKategory = index;
+      this.activeKategory = this.activeKategory === index ? null : index;
     },
   },
 };
 </script>
 
 <style lang="css" scoped>
-.kategory {
+main {
   width: 100vw;
-  border-bottom: 1px solid black;
+  height: 100vh;
+  overflow-x: hidden;
+}
+h1 {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+}
+
+.kategory {
+  width: 100%;
+  /*border: 1px dashed green;*/
   background-color: yellow;
-  padding: 1rem 0;
+}
+.kategory-title {
+  background-color: yellow;
+  padding: 1.5rem 0;
+  /*border-bottom: 1px solid red;*/
+  border-bottom: 1px solid black;
+  font-size: 1.8rem;
+  font-weight: bold;
 }
 .point {
   border-bottom: 1px solid black;
-  padding: 0.5rem;
+  padding: 2.5rem 1.5rem;
   background-color: gray;
+  font-size: 1.6rem;
 }
 .transformSlow {
-  transition: transform 0.5s;
+  transition: transform 0.25s;
 }
 </style>
