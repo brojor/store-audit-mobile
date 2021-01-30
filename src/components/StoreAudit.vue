@@ -2,18 +2,22 @@
   <main>
     <h1>Store audit</h1>
     <div v-for="(kategory, index) in table" :key="index" class="kategory">
-      <div @click="method1(index)" class="kategory-title">
+      <div
+        @click="method1(index)"
+        class="kategory-title"
+        :class="{ active: activeKategory === index }"
+      >
         {{ kategory.name }}
       </div>
       <transition name="roll">
         <div class="points" v-if="activeKategory === index">
           <div
+            class="point transformSlow"
             ref="trgt"
             @touchstart="touchstart(i, $event)"
             @touchend="touchend(i, $event)"
             @touchmove="touchmove(i, $event)"
             draggable="true"
-            class="point transformSlow"
             v-for="(point, i) in kategory.points"
             :key="i"
             :point="point"
@@ -59,14 +63,16 @@ export default {
       const target = this.$refs.trgt[index];
       const xNow = event.touches[0].clientX;
       const move = xNow - this.x.start;
-      console.log(move);
+      // console.log(move);
 
       target.style.transform = `translate3d(${move}px, 0px, 0px)`;
       if (move > 360 / 3) {
-        this.$refs.trgt[index].style.backgroundColor = 'green';
+        this.$refs.trgt[index].style.backgroundColor = '#3DDC97';
+        this.$refs.trgt[index].style.color = 'white';
       }
       if (move < -360 / 3) {
-        target.style.backgroundColor = 'red';
+        target.style.backgroundColor = '#f0544f';
+        this.$refs.trgt[index].style.color = 'white';
       }
     },
     method1(index) {
@@ -97,14 +103,15 @@ main {
 }
 h1 {
   font-size: 3rem;
-  margin-bottom: 1rem;
+  margin: 2rem;
+  text-transform: uppercase;
 }
 
 .kategory {
   width: 100%;
-  border: 1px solid black;
-  border-top: 0;
-  border-radius: 0.5rem;
+  border: 2px solid black;
+  /*border-top: 0;*/
+  /*border-radius: 0.5rem;*/
   background-color: #eee;
   overflow: hidden;
   /*margin: 0 0.5rem;*/
@@ -113,16 +120,25 @@ h1 {
 }
 .kategory-title {
   background-color: yellow;
+  background-color: #564d51;
+  color: white;
   padding: 1.5rem 0;
   /*border-bottom: 1px solid red;*/
   /*border-bottom: 1px solid black;*/
   font-size: 1.8rem;
-  font-weight: bold;
+  /*font-weight: bold;*/
+  transition: background-color 0.5s;
+}
+.active {
+  background-color: #201d1e;
+}
+.points {
+  background-color: #eee;
 }
 .point {
-  border-bottom: 1px solid black;
+  border-top: 1px solid black;
   padding: 2.5rem 1.5rem;
-  background-color: gray;
+  background-color: #ffdec2;
   font-size: 1.6rem;
 }
 .transformSlow {
