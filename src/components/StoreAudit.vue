@@ -64,8 +64,9 @@ export default {
       const xNow = event.touches[0].clientX;
       const move = xNow - this.x.start;
       // console.log(move);
-
-      target.style.transform = `translate3d(${move}px, 0px, 0px)`;
+      if (Math.abs(move) > 15) {
+        target.style.transform = `translate3d(${move}px, 0px, 0px)`;
+      }
       if (move > 360 / 3) {
         this.$refs.trgt[index].style.backgroundColor = '#3DDC97';
         this.$refs.trgt[index].style.color = 'white';
@@ -85,9 +86,10 @@ export default {
 <style lang="css" scoped>
 .roll-enter-active,
 .roll-leave-active {
-  transition: all 0.5s;
+  transition: all 0.5s cubic-bezier(0.37, 0, 0.63, 1);
   max-height: 2000px;
 }
+
 .roll-enter,
 .roll-leave-to {
   max-height: 0px;
