@@ -90,9 +90,7 @@ export default {
 }
 .roll-enter,
 .roll-leave-to {
-  /*opacity: 0;*/
   max-height: 0px;
-  /*opacity: 0;*/
 }
 
 main {
@@ -110,23 +108,15 @@ h1 {
 .kategory {
   width: 100%;
   border: 2px solid black;
-  /*border-top: 0;*/
-  /*border-radius: 0.5rem;*/
+  margin: 4px 0;
   background-color: #eee;
   overflow: hidden;
-  /*margin: 0 0.5rem;*/
-
-  /*margin: 2rem 0;*/
 }
 .kategory-title {
-  background-color: yellow;
   background-color: #564d51;
   color: white;
   padding: 1.5rem 0;
-  /*border-bottom: 1px solid red;*/
-  /*border-bottom: 1px solid black;*/
   font-size: 1.8rem;
-  /*font-weight: bold;*/
   transition: background-color 0.5s;
 }
 .active {
