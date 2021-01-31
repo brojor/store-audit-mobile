@@ -1,31 +1,52 @@
 <template>
   <main>
     <h1>Store audit</h1>
-    <div v-for="(kategory, katIndex) in table" :key="katIndex" class="kategory">
+    <div
+      v-for="(kategory, key, katIndex) in table"
+      :key="katIndex"
+      class="kategory"
+    >
       <div
         @click="method1(katIndex)"
         class="kategory-title"
         :class="{ active: activeKategory === katIndex }"
       >
-        {{ kategory.name }} {{ calcTotalValue(kategory.points) }}
+        {{ kategories[key] }}
       </div>
-      <transition name="roll">
-        <div class="points" v-if="activeKategory === katIndex">
-          <div
-            class="point transformSlow"
-            :class="point.status"
-            ref="trgt"
-            @touchstart="touchstart(pointIndex, $event)"
-            @touchend="touchend(pointIndex, $event)"
-            @touchmove="touchmove(katIndex, pointIndex, $event)"
-            draggable="true"
-            v-for="(point, pointIndex) in kategory.points"
-            :key="pointIndex"
-            :point="point"
-          >
-            {{ point.name }} {{ point.value }} {{ point.status }}
-          </div>
+      <div class="points" v-if="activeKategory === katIndex">
+        <div
+          v-for="(value2, key2, index2) in kategory"
+          :key="index2"
+          class="point transformSlow"
+          :class="value2.status"
+          ref="trgt"
+          @touchstart="touchstart(index2, $event)"
+          @touchend="touchend(index2, $event)"
+          @touchmove="touchmove(value2, key, key2, index2, $event)"
+          draggable="true"
+        >
+          <p>{{ points[key][key2] }}</p>
+          <!-- <p>{{ value2.status }}</p> -->
         </div>
+      </div>
+
+      <transition name="roll">
+        <!-- <div class="points" v-if="activeKategory === katIndex"> -->
+        <!--         <div
+          class="point transformSlow"
+          :class="point.status"
+          ref="trgt"
+          @touchstart="touchstart(pointIndex, $event)"
+          @touchend="touchend(pointIndex, $event)"
+          @touchmove="touchmove(katIndex, pointIndex, $event)"
+          draggable="true"
+          v-for="(point, pointIndex) in kategory"
+          :key="pointIndex"
+          :point="point"
+        >
+          {{ point }}
+        </div> -->
+        <!-- </div> -->
       </transition>
     </div>
   </main>
@@ -33,8 +54,10 @@
 
 <script>
 // import CategoryPoint from '@/components/CategoryPoint.vue';
-import table from '../../data';
-import dataStore from '../../dataStore';
+// import table from '../../data';
+// import dataStore from '../../dataStore';
+import table from '../../dataStore';
+import { kategories, points } from '../../names';
 
 export default {
   name: 'StoreAudit',
@@ -42,12 +65,27 @@ export default {
 
   data() {
     return {
+      kategories,
+      points,
       emitet: '',
       table,
-      dataStore,
+      // dataStore,
       activeKategory: null,
       x: {},
       touchTarget: null,
+      // kategoryTitles: {
+      //   kat0: 'Před prodejnou, vstup do prodejny',
+      //   kat1: 'V prodejně',
+      //   kat2: 'Sklad, zázemí, kancelář',
+      //   kat3: 'Layout, POS a MKT označení',
+      //   kat4: 'Prezentace',
+      //   kat5: 'Provoz',
+      //   kat6: 'Stav zásob, "díry"',
+      //   kat7: 'Doplněnost',
+      //   kat8: 'Ceny, označení zboží',
+      //   kat9: 'Expirace',
+      //   kat10: 'Personál',
+      // },
     };
   },
   methods: {
@@ -63,8 +101,10 @@ export default {
       this.$refs.trgt[index].style.transform = 'translate3d(0px, 0px, 0px)';
       this.touchTarget.classList.add('transformSlow');
     },
-    touchmove(katIndex, pointIndex, event) {
-      const target = this.$refs.trgt[pointIndex];
+    touchmove(value2, key, key2, index2, event) {
+      // console.log({ katIndex }, { pointIndex }, { event });
+      const target = this.$refs.trgt[index2];
+      // console.log({ target });
       const xNow = event.touches[0].clientX;
       const move = xNow - this.x.start;
       // console.log(move);
@@ -72,49 +112,30 @@ export default {
         target.style.transform = `translate3d(${move}px, 0px, 0px)`;
       }
       if (Math.abs(move) > 360 / 3) {
-        const { status } = this.dataStore[`kat${katIndex}`][`p${pointIndex}`];
+        // const { status } = this.dataStore[`kat${katIndex}`][`p${pointIndex}`];
+        const { status } = value2;
         const swipeDirection = move > 0 ? 'right' : 'left';
         if (status !== 'accept' && swipeDirection === 'right') {
-          this.swipedRigth(katIndex, pointIndex);
+          // this.swipedRigth(katIndex, pointIndex);
+          this.table[key][key2].status = 'accept';
         }
         if (status !== 'reject' && swipeDirection === 'left') {
-          this.swipedLeft(katIndex, pointIndex);
+          // this.swipedLeft(katIndex, pointIndex);
+          this.table[key][key2].status = 'reject';
         }
-
-        // swipe right
-        // if (this.emitet !== 'done' && move > 0) {
-        //   this.swipedRigth(katIndex, pointIndex);
-        //   console.log('doprava');
-        //   this.emitet = 'done';
-        // }
-        // // swipe left
-        // if (this.emitet !== 'undone' && move < 0) {
-        //   this.swipedLeft(katIndex, pointIndex);
-        //   console.log('doleva');
-        //   this.emitet = 'undone';
-        // }
       }
-      // if (move > 360 / 3) {
-      //   if (this.emitet !== 'done') {
-      //     this.pointDone(katIndex, pointIndex);
-      //     this.emitet = 'done';
-      //   }
-      // }
-      // if (move < -360 / 3) {
-      //   this.$refs.trgt[pointIndex].style.backgroundColor = '#f0544f';
-      //   this.$refs.trgt[pointIndex].style.color = 'white';
-      // }
     },
     method1(index) {
       this.activeKategory = this.activeKategory === index ? null : index;
     },
-    calcTotalValue(points) {
-      return points.reduce((acc, val) => acc + val.value, 0);
-    },
+    // calcTotalValue(points) {
+    //   return points.reduce((acc, val) => acc + val.value, 0);
+    // },
     swipedRigth(katIndex, pointIndex) {
-      const target = this.$refs.trgt[pointIndex];
-      target.style.backgroundColor = '#3DDC97';
-      target.style.color = 'white';
+      console.log(katIndex, pointIndex);
+      // const target = this.$refs.trgt[pointIndex];
+      // target.style.backgroundColor = '#3DDC97';
+      // target.style.color = 'white';
 
       // END nebude nutne - bude se řešit formátováním podle true/false v dataStoru
 
@@ -122,9 +143,9 @@ export default {
     },
     swipedLeft(katIndex, pointIndex) {
       this.dataStore[`kat${katIndex}`][`p${pointIndex}`] = 'reject';
-      const target = this.$refs.trgt[pointIndex];
-      target.style.backgroundColor = '#f0544f';
-      target.style.color = 'white';
+      // const target = this.$refs.trgt[pointIndex];
+      // target.style.backgroundColor = '#f0544f';
+      // target.style.color = 'white';
     },
   },
 };
@@ -183,12 +204,12 @@ h1 {
 .transformSlow {
   transition: transform 0.25s;
 }
-.accepted {
+.accept {
   background-color: #3ddc97;
   color: white;
 }
-.rejeceted {
-  .background-color: #f0544f;
+.reject {
+  background-color: #f0544f;
   color: white;
 }
 </style>
