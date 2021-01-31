@@ -13,6 +13,7 @@
         <div class="points" v-if="activeKategory === katIndex">
           <div
             class="point transformSlow"
+            :class="point.status"
             ref="trgt"
             @touchstart="touchstart(pointIndex, $event)"
             @touchend="touchend(pointIndex, $event)"
@@ -22,7 +23,7 @@
             :key="pointIndex"
             :point="point"
           >
-            {{ point.name }} {{ point.value }}
+            {{ point.name }} {{ point.value }} {{ point.status }}
           </div>
         </div>
       </transition>
@@ -71,13 +72,12 @@ export default {
         target.style.transform = `translate3d(${move}px, 0px, 0px)`;
       }
       if (Math.abs(move) > 360 / 3) {
-        const isDone = this.dataStore[`kat${katIndex}`][`p${pointIndex}`];
+        const { status } = this.dataStore[`kat${katIndex}`][`p${pointIndex}`];
         const swipeDirection = move > 0 ? 'right' : 'left';
-        console.log(isDone);
-        if (!isDone && swipeDirection === 'right') {
+        if (status !== 'accept' && swipeDirection === 'right') {
           this.swipedRigth(katIndex, pointIndex);
         }
-        if (isDone && swipeDirection === 'left') {
+        if (status !== 'reject' && swipeDirection === 'left') {
           this.swipedLeft(katIndex, pointIndex);
         }
 
@@ -118,10 +118,10 @@ export default {
 
       // END nebude nutne - bude se řešit formátováním podle true/false v dataStoru
 
-      this.dataStore[`kat${katIndex}`][`p${pointIndex}`] = true;
+      this.dataStore[`kat${katIndex}`][`p${pointIndex}`] = 'accept';
     },
     swipedLeft(katIndex, pointIndex) {
-      this.dataStore[`kat${katIndex}`][`p${pointIndex}`] = false;
+      this.dataStore[`kat${katIndex}`][`p${pointIndex}`] = 'reject';
       const target = this.$refs.trgt[pointIndex];
       target.style.backgroundColor = '#f0544f';
       target.style.color = 'white';
@@ -182,5 +182,13 @@ h1 {
 }
 .transformSlow {
   transition: transform 0.25s;
+}
+.accepted {
+  background-color: #3ddc97;
+  color: white;
+}
+.rejeceted {
+  .background-color: #f0544f;
+  color: white;
 }
 </style>
