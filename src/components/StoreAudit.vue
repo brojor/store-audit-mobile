@@ -1,28 +1,28 @@
 <template>
   <main>
     <h1>Store audit</h1>
-    <div v-for="(kategory, index) in table" :key="index" class="kategory">
+    <div v-for="(kategory, katIndex) in table" :key="katIndex" class="kategory">
       <div
-        @click="method1(index)"
+        @click="method1(katIndex)"
         class="kategory-title"
-        :class="{ active: activeKategory === index }"
+        :class="{ active: activeKategory === katIndex }"
       >
-        {{ kategory.name }}
+        {{ kategory.name }} {{ calcTotalValue(kategory.points) }}
       </div>
       <transition name="roll">
-        <div class="points" v-if="activeKategory === index">
+        <div class="points" v-if="activeKategory === katIndex">
           <div
             class="point transformSlow"
             ref="trgt"
-            @touchstart="touchstart(i, $event)"
-            @touchend="touchend(i, $event)"
-            @touchmove="touchmove(i, $event)"
+            @touchstart="touchstart(pointIndex, $event)"
+            @touchend="touchend(pointIndex, $event)"
+            @touchmove="touchmove(katIndex, pointIndex, $event)"
             draggable="true"
-            v-for="(point, i) in kategory.points"
-            :key="i"
+            v-for="(point, pointIndex) in kategory.points"
+            :key="pointIndex"
             :point="point"
           >
-            {{ point.name }}
+            {{ point.name }} {{ point.value }}
           </div>
         </div>
       </transition>
@@ -33,6 +33,7 @@
 <script>
 // import CategoryPoint from '@/components/CategoryPoint.vue';
 import table from '../../data';
+import dataStore from '../../dataStore';
 
 export default {
   name: 'StoreAudit',
@@ -40,7 +41,9 @@ export default {
 
   data() {
     return {
+      emitet: '',
       table,
+      dataStore,
       activeKategory: null,
       x: {},
       touchTarget: null,
@@ -55,29 +58,73 @@ export default {
     touchend(index, event) {
       this.x.end = event.changedTouches[0].clientX;
 
-      console.log(this.x.start - this.x.end);
+      // console.log(this.x.start - this.x.end);
       this.$refs.trgt[index].style.transform = 'translate3d(0px, 0px, 0px)';
       this.touchTarget.classList.add('transformSlow');
     },
-    touchmove(index, event) {
-      const target = this.$refs.trgt[index];
+    touchmove(katIndex, pointIndex, event) {
+      const target = this.$refs.trgt[pointIndex];
       const xNow = event.touches[0].clientX;
       const move = xNow - this.x.start;
       // console.log(move);
       if (Math.abs(move) > 15) {
         target.style.transform = `translate3d(${move}px, 0px, 0px)`;
       }
-      if (move > 360 / 3) {
-        this.$refs.trgt[index].style.backgroundColor = '#3DDC97';
-        this.$refs.trgt[index].style.color = 'white';
+      if (Math.abs(move) > 360 / 3) {
+        const isDone = this.dataStore[`kat${katIndex}`][`p${pointIndex}`];
+        const swipeDirection = move > 0 ? 'right' : 'left';
+        console.log(isDone);
+        if (!isDone && swipeDirection === 'right') {
+          this.swipedRigth(katIndex, pointIndex);
+        }
+        if (isDone && swipeDirection === 'left') {
+          this.swipedLeft(katIndex, pointIndex);
+        }
+
+        // swipe right
+        // if (this.emitet !== 'done' && move > 0) {
+        //   this.swipedRigth(katIndex, pointIndex);
+        //   console.log('doprava');
+        //   this.emitet = 'done';
+        // }
+        // // swipe left
+        // if (this.emitet !== 'undone' && move < 0) {
+        //   this.swipedLeft(katIndex, pointIndex);
+        //   console.log('doleva');
+        //   this.emitet = 'undone';
+        // }
       }
-      if (move < -360 / 3) {
-        target.style.backgroundColor = '#f0544f';
-        this.$refs.trgt[index].style.color = 'white';
-      }
+      // if (move > 360 / 3) {
+      //   if (this.emitet !== 'done') {
+      //     this.pointDone(katIndex, pointIndex);
+      //     this.emitet = 'done';
+      //   }
+      // }
+      // if (move < -360 / 3) {
+      //   this.$refs.trgt[pointIndex].style.backgroundColor = '#f0544f';
+      //   this.$refs.trgt[pointIndex].style.color = 'white';
+      // }
     },
     method1(index) {
       this.activeKategory = this.activeKategory === index ? null : index;
+    },
+    calcTotalValue(points) {
+      return points.reduce((acc, val) => acc + val.value, 0);
+    },
+    swipedRigth(katIndex, pointIndex) {
+      const target = this.$refs.trgt[pointIndex];
+      target.style.backgroundColor = '#3DDC97';
+      target.style.color = 'white';
+
+      // END nebude nutne - bude se řešit formátováním podle true/false v dataStoru
+
+      this.dataStore[`kat${katIndex}`][`p${pointIndex}`] = true;
+    },
+    swipedLeft(katIndex, pointIndex) {
+      this.dataStore[`kat${katIndex}`][`p${pointIndex}`] = false;
+      const target = this.$refs.trgt[pointIndex];
+      target.style.backgroundColor = '#f0544f';
+      target.style.color = 'white';
     },
   },
 };
