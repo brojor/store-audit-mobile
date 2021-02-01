@@ -12,6 +12,8 @@
         :class="{ active: activeKategory === katIndex }"
       >
         {{ kategories[katKey] }}
+        {{ calcAvailableScore(katKey) }}
+        {{ calcCurrentScore(katKey) }}
       </div>
       <transition name="roll">
         <div class="points" v-if="activeKategory === katIndex">
@@ -27,6 +29,7 @@
             draggable="true"
           >
             <p>{{ points[katKey][pointKey] }}</p>
+            <p>{{ weights[katKey][pointKey] }}</p>
           </div>
         </div>
       </transition>
@@ -37,7 +40,7 @@
 
 <script>
 import table from '../../dataStore';
-import { kategories, points } from '../../names';
+import { kategories, points, weights } from '../../names';
 
 export default {
   name: 'StoreAudit',
@@ -46,6 +49,7 @@ export default {
     return {
       kategories,
       points,
+      weights,
       emitet: '',
       table,
       activeKategory: null,
@@ -83,9 +87,18 @@ export default {
     dropDown(index) {
       this.activeKategory = this.activeKategory === index ? null : index;
     },
-    // calcTotalValue(points) {
-    //   return points.reduce((acc, val) => acc + val.value, 0);
-    // },
+    calcAvailableScore(katKey) {
+      return Object.values(weights[katKey]).reduce((acc, val) => acc + val);
+    },
+    calcCurrentScore(katKey) {
+      const keys = Object.keys(weights[katKey]);
+      return keys.reduce((acc, pointKey) => {
+        if (this.table[katKey][pointKey].status === 'accept') {
+          return acc + weights[katKey][pointKey];
+        }
+        return acc;
+      }, 0);
+    },
     swipedRigth(katKey, pointKey) {
       this.table[katKey][pointKey].status = 'accept';
     },
