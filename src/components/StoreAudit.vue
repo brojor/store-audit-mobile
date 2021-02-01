@@ -11,9 +11,10 @@
         class="kategory-title"
         :class="{ active: activeKategory === katIndex }"
       >
-        {{ kategories[katKey] }}
-        {{ calcAvailableScore(katKey) }}
-        {{ calcCurrentScore(katKey) }}
+        {{ kategories[katKey]
+        }}<span class="rt-idx">
+          {{ `${calcCurrentScore(katKey)} / ${calcAvailableScore(katKey)}` }}
+        </span>
       </div>
       <transition name="roll">
         <div class="points" v-if="activeKategory === katIndex">
@@ -29,7 +30,7 @@
             draggable="true"
           >
             <p>{{ points[katKey][pointKey] }}</p>
-            <p>{{ weights[katKey][pointKey] }}</p>
+            <!-- <p class="rt-idx">{{ weights[katKey][pointKey] }}</p> -->
           </div>
         </div>
       </transition>
@@ -146,6 +147,7 @@ h1 {
   padding: 1.5rem 0;
   font-size: 1.8rem;
   transition: background-color 0.5s;
+  position: relative;
 }
 .active {
   background-color: #201d1e;
@@ -158,6 +160,7 @@ h1 {
   padding: 2.5rem 1.5rem;
   background-color: #ffdec2;
   font-size: 1.6rem;
+  position: relative;
 }
 .transformSlow {
   transition: transform 0.25s;
@@ -169,5 +172,11 @@ h1 {
 .reject {
   background-color: #f0544f;
   color: white;
+}
+.rt-idx {
+  font-size: 1.2rem;
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
 }
 </style>
