@@ -31,23 +31,33 @@
           >
             <p>{{ points[katKey][pointKey] }}</p>
             <!-- <p class="rt-idx">{{ weights[katKey][pointKey] }}</p> -->
+            <MyModal
+              :modal="modal"
+              :id="`${katKey}-${pointKey}`"
+              :katKey="katKey"
+              :pointKey="pointKey"
+            />
           </div>
         </div>
       </transition>
-      <transition name="roll"> </transition>
     </div>
   </main>
 </template>
 
 <script>
+import MyModal from '@/components/MyModal.vue';
 import table from '../../dataStore';
 import { kategories, points, weights } from '../../names';
 
 export default {
   name: 'StoreAudit',
+  components: {
+    MyModal,
+  },
 
   data() {
     return {
+      modal: false,
       kategories,
       points,
       weights,
@@ -60,11 +70,13 @@ export default {
   },
   methods: {
     touchstart(index, event) {
+      console.log(event);
       this.posX.start = event.touches[0].clientX;
       this.touchTarget = this.$refs.trgt[index];
       this.touchTarget.classList.remove('transformSlow');
     },
-    touchend() {
+    touchend(event) {
+      console.log(event);
       this.touchTarget.style.transform = 'translate3d(0px, 0px, 0px)';
       this.touchTarget.classList.add('transformSlow');
     },
@@ -103,8 +115,10 @@ export default {
     swipedRigth(katKey, pointKey) {
       this.table[katKey][pointKey].status = 'accept';
     },
-    swipedLeft(katKey, pointKey) {
+    async swipedLeft(katKey, pointKey) {
       this.table[katKey][pointKey].status = 'reject';
+      await new Promise((r) => setTimeout(r, 500));
+      this.modal = `${katKey}-${pointKey}`;
     },
   },
 };
@@ -123,6 +137,7 @@ export default {
 }
 
 main {
+  position: relative;
   width: 100vw;
   height: 100vh;
   overflow-x: hidden;
@@ -179,4 +194,7 @@ h1 {
   top: 0.5rem;
   right: 0.5rem;
 }
+/*--component start--*/
+
+/*--component end--*/
 </style>
