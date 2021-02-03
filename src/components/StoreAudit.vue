@@ -31,32 +31,33 @@
           >
             <p>{{ points[katKey][pointKey] }}</p>
             <!-- <p class="rt-idx">{{ weights[katKey][pointKey] }}</p> -->
-            <MyModal
-              :modal="modal"
-              :id="`${katKey}-${pointKey}`"
-              :katKey="katKey"
-              :pointKey="pointKey"
-            />
           </div>
         </div>
       </transition>
+    </div>
+    <RootModal></RootModal>
+    <div v-if="hiddeAll" class="secret">
+      <form @submit.prevent="unhide">
+        <input type="text" placeholder="Zadejte heslo" v-model="password" />
+      </form>
     </div>
   </main>
 </template>
 
 <script>
-import MyModal from '@/components/MyModal.vue';
+import RootModal from '@/components/RootModal.vue';
 import table from '../../dataStore';
 import { kategories, points, weights } from '../../names';
+import EventBus from '../eventBus';
 
 export default {
   name: 'StoreAudit',
-  components: {
-    MyModal,
-  },
+  components: { RootModal },
 
   data() {
     return {
+      hiddeAll: true,
+      password: '',
       modal: false,
       kategories,
       points,
@@ -66,9 +67,15 @@ export default {
       activeKategory: null,
       posX: {},
       touchTarget: null,
+      justEdited: {},
     };
   },
   methods: {
+    unhide() {
+      if (this.password.toLowerCase() === 'únor') {
+        this.hiddeAll = false;
+      }
+    },
     touchstart(index, event) {
       console.log(event);
       this.posX.start = event.touches[0].clientX;
@@ -112,14 +119,23 @@ export default {
         return acc;
       }, 0);
     },
-    swipedRigth(katKey, pointKey) {
-      this.table[katKey][pointKey].status = 'accept';
+    swipedRigth(kategory, point) {
+      this.table[kategory][point].status = 'accept';
     },
-    async swipedLeft(katKey, pointKey) {
-      this.table[katKey][pointKey].status = 'reject';
-      await new Promise((r) => setTimeout(r, 500));
-      this.modal = `${katKey}-${pointKey}`;
+    swipedLeft(kategory, point) {
+      this.table[kategory][point].status = 'reject';
+      // samostatná metoda?
+      this.justEdited = { kategory, point };
+      setTimeout(() => {
+        EventBus.$emit('open');
+      }, 500);
     },
+  },
+  created() {
+    EventBus.$on('commentAdded', (comment) => {
+      const { kategory, point } = this.justEdited;
+      this.table[kategory][point].note = comment;
+    });
   },
 };
 </script>
@@ -195,6 +211,24 @@ h1 {
   right: 0.5rem;
 }
 /*--component start--*/
-
+.secret {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  background-color: rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  backdrop-filter: blur(8px);
+}
+.secret input {
+  margin-top: 33vh;
+  height: 3rem;
+  padding: 1rem;
+  text-align: center;
+}
 /*--component end--*/
 </style>

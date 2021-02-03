@@ -1,8 +1,12 @@
 <template>
-  <div class="overlay" v-if="modal === id">
+  <div class="overlay" v-if="isOpen">
     <div class="dialog">
       <div class="title">Přidání poznámky</div>
-      <textarea v-model="message" placeholder="add multiple lines"></textarea>
+      <textarea
+        v-model="message"
+        placeholder="Zde stručně popište problém.."
+        rows="8"
+      ></textarea>
       <!--       <textarea
         v-model="textAreaText"
         placeholder="Zde stručně popiště problém.."
@@ -10,20 +14,29 @@
         id="bb"
         rows="10"
       ></textarea> -->
-      <button @click="$emit('submited', message)">Uložit</button>
+      <button @click="handleSubmit">Uložit</button>
     </div>
   </div>
 </template>
 
 <script>
+import EventBus from '@/eventBus';
+
 export default {
   name: 'MyModal',
-  props: ['katKey', 'pointKey', 'modal', 'id'],
+  props: ['isOpen'],
 
   data() {
     return {
       message: '',
     };
+  },
+  methods: {
+    handleSubmit() {
+      EventBus.$emit('commentAdded', this.message);
+      this.message = '';
+      this.$emit('close');
+    },
   },
 };
 </script>
