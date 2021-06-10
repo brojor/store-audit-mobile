@@ -1,36 +1,32 @@
 <template>
   <main>
     <h1>Store audit</h1>
-    <div
-      v-for="(katValue, katKey, katIndex) in table"
-      :key="katIndex"
-      class="kategory"
-    >
+    <div v-for="category in categories" :key="category.id" class="kategory">
       <div
-        @click="dropDown(katIndex)"
+        @click="dropDown(category.id)"
         class="kategory-title"
-        :class="{ active: activeKategory === katIndex }"
+        :class="{ active: activeKategory === category.id }"
       >
-        {{ kategories[katKey]
-        }}<span class="rt-idx">
-          {{ `${calcCurrentScore(katKey)} / ${calcAvailableScore(katKey)}` }}
+        {{ category.name }}
+        <span class="rt-idx">
+          {{ `${calcCurrentScore(category.id)} / ${calcAvailableScore(category.id)}` }}
         </span>
       </div>
       <transition name="roll">
-        <div class="points" v-if="activeKategory === katIndex">
+        <div class="points" v-if="activeKategory === category.id">
           <div
-            v-for="(pointValue, pointKey, pointIndex) in katValue"
-            :key="pointIndex"
+            v-for="categoryPoint in category.categoryPoints"
+            :key="categoryPoint.id"
             class="point transformSlow"
-            :class="pointValue.status"
+            :class="checkStatus(category.id, categoryPoint.id)"
             ref="trgt"
-            @touchstart="touchstart(pointIndex, $event)"
+            @touchstart="touchstart(categoryPoint.id, $event)"
             @touchend="touchend"
-            @touchmove="touchmove(pointValue, katKey, pointKey, $event)"
+            @touchmove="touchmove(category.id, categoryPoint.id, $event)"
             draggable="true"
           >
-            <p>{{ points[katKey][pointKey] }}</p>
-            <!-- <p class="rt-idx">{{ weights[katKey][pointKey] }}</p> -->
+            <p>{{ categoryPoint.name }}</p>
+            <p class="rt-idx">{{ categoryPoint.weight }}</p>
           </div>
         </div>
       </transition>
@@ -46,9 +42,9 @@
 
 <script>
 import RootModal from '@/components/RootModal.vue';
-import table from '../../dataStore';
-import { kategories, points, weights } from '../../names';
 import EventBus from '../eventBus';
+import results from '../results.json';
+import categories from '../skeleton.json';
 
 export default {
   name: 'StoreAudit',
@@ -58,16 +54,12 @@ export default {
     return {
       hiddeAll: true,
       password: '',
-      modal: false,
-      kategories,
-      points,
-      weights,
-      emitet: '',
-      table,
       activeKategory: null,
       posX: {},
       touchTarget: null,
       justEdited: {},
+      results,
+      categories,
     };
   },
   methods: {
@@ -77,64 +69,105 @@ export default {
       }
     },
     touchstart(index, event) {
-      console.log(event);
+      // console.log(event);
       this.posX.start = event.touches[0].clientX;
-      this.touchTarget = this.$refs.trgt[index];
+      this.touchTarget = this.$refs.trgt[index - 1];
       this.touchTarget.classList.remove('transformSlow');
     },
-    touchend(event) {
-      console.log(event);
+    touchend() {
+      // console.log(event);
       this.touchTarget.style.transform = 'translate3d(0px, 0px, 0px)';
       this.touchTarget.classList.add('transformSlow');
     },
-    touchmove(pointValue, katKey, pointKey, event) {
-      const posXNow = event.touches[0].clientX;
-      const move = posXNow - this.posX.start;
-      if (Math.abs(move) > 20) {
-        this.touchTarget.style.transform = `translate3d(${move}px, 0px, 0px)`;
+    touchmove(categoryId, categoryPointId, event) {
+      const moveLength = this.calcMoveLength(event);
+      if (Math.abs(moveLength) > 20) {
+        this.touchTarget.style.transform = `translate3d(${moveLength}px, 0px, 0px)`;
       }
-      if (Math.abs(move) > window.innerWidth / 3) {
-        const { status } = pointValue;
-        const swipeDirection = move > 0 ? 'right' : 'left';
-        if (status !== 'accept' && swipeDirection === 'right') {
-          this.swipedRigth(katKey, pointKey);
+      if (Math.abs(moveLength) > window.innerWidth / 3) {
+        const status = this.checkStatus(categoryId, categoryPointId);
+        const swipeDirection = moveLength > 0 ? 'right' : 'left';
+        if (status !== 'accepted' && swipeDirection === 'right') {
+          this.swipedRight(categoryId, categoryPointId);
         }
-        if (status !== 'reject' && swipeDirection === 'left') {
-          this.swipedLeft(katKey, pointKey);
+        if (status !== 'rejected' && swipeDirection === 'left') {
+          this.swipedLeft(categoryId, categoryPointId);
         }
       }
     },
     dropDown(index) {
       this.activeKategory = this.activeKategory === index ? null : index;
     },
-    calcAvailableScore(katKey) {
-      return Object.values(weights[katKey]).reduce((acc, val) => acc + val);
+    calcAvailableScore(categoryId) {
+      const [currentCategory] = this.categories.filter(
+        (category) => category.id === categoryId,
+      );
+      return currentCategory.categoryPoints.reduce(
+        (acc, categoryPoint) => acc + categoryPoint.weight,
+        0,
+      );
     },
-    calcCurrentScore(katKey) {
-      const keys = Object.keys(weights[katKey]);
-      return keys.reduce((acc, pointKey) => {
-        if (this.table[katKey][pointKey].status === 'accept') {
-          return acc + weights[katKey][pointKey];
+    calcCurrentScore(categoryId) {
+      const resultItems = this.results.filter((point) => point.kategory === categoryId);
+      return resultItems.reduce((acc, point) => {
+        if (point.accepted) {
+          const currentCategory = this.categories.find(
+            (category) => category.id === point.kategory,
+          );
+          const { weight } = currentCategory.categoryPoints.find(
+            (categoryPoint) => categoryPoint.id === point.kategoryPoint,
+          );
+          return acc + weight;
         }
         return acc;
       }, 0);
     },
-    swipedRigth(kategory, point) {
-      this.table[kategory][point].status = 'accept';
+    swipedRight(categoryId, categoryPointId) {
+      this.writeStatus(categoryId, categoryPointId, true);
     },
-    swipedLeft(kategory, point) {
-      this.table[kategory][point].status = 'reject';
+    swipedLeft(categoryId, categoryPointId) {
+      this.writeStatus(categoryId, categoryPointId, false);
       // samostatná metoda?
-      this.justEdited = { kategory, point };
+      this.justEdited = { categoryId, categoryPointId };
       setTimeout(() => {
         EventBus.$emit('open');
       }, 500);
     },
+    writeStatus(categoryId, categoryPointId, value) {
+      const [objToWrite] = this.results.filter(
+        (obj) => obj.kategory === categoryId && obj.kategoryPoint === categoryPointId,
+      );
+      objToWrite.accepted = value;
+      console.log(objToWrite);
+    },
+    calcMoveLength(event) {
+      const positionX = event.touches[0].clientX;
+      const moveLength = positionX - this.posX.start;
+      return moveLength;
+    },
+    checkStatus(categoryId, categoryPointId) {
+      const [currentCategoryPoint] = this.results.filter(
+        (obj) => obj.kategory === categoryId && obj.kategoryPoint === categoryPointId,
+      );
+      if (currentCategoryPoint.accepted === true) {
+        return 'accepted';
+      }
+      if (currentCategoryPoint.accepted === false) {
+        return 'rejected';
+      }
+      return null;
+    },
+    writeComment(categoryId, categoryPointId, comment) {
+      const [objToWrite] = this.results.filter(
+        (obj) => obj.kategory === categoryId && obj.kategoryPoint === categoryPointId,
+      );
+      objToWrite.comment = comment;
+    },
   },
   created() {
     EventBus.$on('commentAdded', (comment) => {
-      const { kategory, point } = this.justEdited;
-      this.table[kategory][point].note = comment;
+      const { categoryId, categoryPointId } = this.justEdited;
+      this.writeComment(categoryId, categoryPointId, comment);
     });
   },
 };
@@ -196,11 +229,11 @@ h1 {
 .transformSlow {
   transition: transform 0.25s;
 }
-.accept {
+.accepted {
   background-color: #3ddc97;
   color: white;
 }
-.reject {
+.rejected {
   background-color: #f0544f;
   color: white;
 }
