@@ -1,6 +1,9 @@
 <template>
   <main>
     <h1>Store audit</h1>
+<select name="selectedStore" id="selectedStore" v-model="selectedStore">
+  <option v-for="(store, index) in stores" :key="index" :value="store">{{store}}</option>
+</select>
     <div v-for="category in categories" :key="category.id" class="kategory">
       <div
         @click="dropDown(category.id)"
@@ -9,7 +12,8 @@
       >
         {{ category.name }}
         <span class="rt-idx">
-          {{ `${calcCurrentScore(category.id)} / ${calcAvailableScore(category.id)}` }}
+          {{ `${(calcCurrentScore(category.id) / calcAvailableScore(category.id)
+           * 100).toFixed()}%` }}
         </span>
       </div>
       <transition name="roll">
@@ -26,11 +30,12 @@
             draggable="true"
           >
             <p>{{ categoryPoint.name }}</p>
-            <p class="rt-idx">{{ categoryPoint.weight }}</p>
+            <p class="rt-idx">{{ categoryPoint.weight }} b.</p>
           </div>
         </div>
       </transition>
     </div>
+    <button @click="sendResults">Odeslat</button>
     <RootModal></RootModal>
     <div v-if="hiddeAll" class="secret">
       <form @submit.prevent="unhide">
@@ -52,7 +57,7 @@ export default {
 
   data() {
     return {
-      hiddeAll: true,
+      hiddeAll: false,
       password: '',
       activeKategory: null,
       posX: {},
@@ -60,6 +65,10 @@ export default {
       justEdited: {},
       results,
       categories,
+      stores: [
+        1015, 1016, 1018,
+      ],
+      selectedStore: 1015,
     };
   },
   methods: {
@@ -161,7 +170,49 @@ export default {
       const [objToWrite] = this.results.filter(
         (obj) => obj.kategory === categoryId && obj.kategoryPoint === categoryPointId,
       );
+      console.log({ objToWrite });
       objToWrite.comment = comment;
+    },
+    sendResults() {
+      const unfilled = this.findUnfilledPoints();
+      if (unfilled.length) {
+        // MODAL error - nejsou vyplněny následující body
+        console.log('nejsou vyplněný následující body: ', unfilled);
+      } else {
+        console.log('Posílám výsledky');
+        const result = {
+          storeId: this.selectedStore, auditor: 'John Doe', date: new Date(), results: this.results,
+        };
+        console.log(result);
+      }
+    },
+    findCategoryName(categoryId) {
+      const { name: categoryName } = this.categories.find((category) => category.id === categoryId);
+      return categoryName;
+    },
+    findCategoryPointName(categoryId, categoryPointId) {
+      const { categoryPoints } = this.categories.find((category) => category.id === categoryId);
+      const { name: categoryPointName } = categoryPoints.find(
+        (categoryPoint) => categoryPoint.id === categoryPointId,
+      );
+      return categoryPointName;
+    },
+    findUnfilledPoints() {
+      const unfilled = this.results.filter((result) => result.accepted === null);
+      const mergedByCategory = unfilled.reduce((acc, result) => {
+        const categoryId = result.kategory;
+        if (!(categoryId in acc)) {
+          const categoryName = this.findCategoryName(categoryId);
+          const unfilledPoints = unfilled.filter(
+            (res) => res.kategory === categoryId,
+          ).map(
+            (point) => this.findCategoryPointName(point.kategory, point.kategoryPoint),
+          );
+          acc[categoryId] = { categoryName, unfilledPoints };
+        }
+        return acc;
+      }, {});
+      return Object.values(mergedByCategory);
     },
   },
   created() {
@@ -238,7 +289,7 @@ h1 {
   color: white;
 }
 .rt-idx {
-  font-size: 1.2rem;
+  font-size: 1.1rem;
   position: absolute;
   top: 0.5rem;
   right: 0.5rem;
