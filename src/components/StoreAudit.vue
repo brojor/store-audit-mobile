@@ -42,18 +42,20 @@
         <input type="text" placeholder="Zadejte heslo" v-model="password" />
       </form>
     </div>
+    <LoginComponent />
   </main>
 </template>
 
 <script>
 import RootModal from '@/components/RootModal.vue';
+import LoginComponent from '@/components/Login.vue';
 import EventBus from '../eventBus';
 import results from '../results.json';
 import categories from '../skeleton.json';
 
 export default {
   name: 'StoreAudit',
-  components: { RootModal },
+  components: { RootModal, LoginComponent },
 
   data() {
     return {
