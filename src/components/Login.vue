@@ -20,7 +20,7 @@
 </template>
 
 <script>
-import ApiService from '@/services/ApiService';
+// import AuthService from '@/services/AuthService';
 
 export default {
   name: 'login',
@@ -34,11 +34,14 @@ export default {
   methods: {
     submit() {
       console.log('submited', this.username, this.password);
-      ApiService.login({ username: this.username, password: this.password })
-        .then(({ data }) => {
-          console.log(data);
+      this.$store
+        .dispatch('login', {
+          username: this.username,
+          password: this.password,
         })
-        .catch((err) => console.log(err));
+        .then(() => {
+          console.log('logged ok');
+        });
     },
   },
 };
