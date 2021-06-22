@@ -1,9 +1,11 @@
 <template>
   <main>
     <h1>Store audit</h1>
-<select name="selectedStore" id="selectedStore" v-model="selectedStore">
-  <option v-for="(store, index) in stores" :key="index" :value="store">{{store}}</option>
-</select>
+    <select name="selectedStore" id="selectedStore" v-model="selectedStore">
+      <option v-for="(store, index) in stores" :key="index" :value="store.id">{{
+        store.name
+      }}</option>
+    </select>
     <div v-for="category in categories" :key="category.id" class="kategory">
       <div
         @click="dropDown(category.id)"
@@ -12,8 +14,12 @@
       >
         {{ category.name }}
         <span class="rt-idx">
-          {{ `${(calcCurrentScore(category.id) / calcAvailableScore(category.id)
-           * 100).toFixed()}%` }}
+          {{
+            `${(
+              (calcCurrentScore(category.id) / calcAvailableScore(category.id)) *
+              100
+            ).toFixed()}%`
+          }}
         </span>
       </div>
       <transition name="roll">
@@ -42,7 +48,7 @@
         <input type="text" placeholder="Zadejte heslo" v-model="password" />
       </form>
     </div>
-    <LoginComponent />
+    <LoginComponent v-if="!userIsLogged" />
   </main>
 </template>
 
@@ -67,11 +73,19 @@ export default {
       justEdited: {},
       results,
       categories,
-      stores: [
-        1015, 1016, 1018,
-      ],
-      selectedStore: 1015,
+      selectedStore: this.$store.state.stores[0].id,
     };
+  },
+  computed: {
+    userIsLogged() {
+      return this.$store.getters.userIsLogged;
+    },
+    stores() {
+      return this.$store.state.stores;
+    },
+    // selectedStore() {
+    //   return this.$store.state.stores[0];
+    // },
   },
   methods: {
     unhide() {
@@ -110,9 +124,7 @@ export default {
       this.activeKategory = this.activeKategory === index ? null : index;
     },
     calcAvailableScore(categoryId) {
-      const [currentCategory] = this.categories.filter(
-        (category) => category.id === categoryId,
-      );
+      const [currentCategory] = this.categories.filter((category) => category.id === categoryId);
       return currentCategory.categoryPoints.reduce(
         (acc, categoryPoint) => acc + categoryPoint.weight,
         0,
@@ -183,7 +195,8 @@ export default {
       } else {
         console.log('Posílám výsledky');
         const result = {
-          storeId: this.selectedStore, auditor: 'John Doe', date: new Date(), results: this.results,
+          storeId: this.selectedStore,
+          results: this.results,
         };
         console.log(result);
       }
@@ -205,11 +218,9 @@ export default {
         const categoryId = result.kategory;
         if (!(categoryId in acc)) {
           const categoryName = this.findCategoryName(categoryId);
-          const unfilledPoints = unfilled.filter(
-            (res) => res.kategory === categoryId,
-          ).map(
-            (point) => this.findCategoryPointName(point.kategory, point.kategoryPoint),
-          );
+          const unfilledPoints = unfilled
+            .filter((res) => res.kategory === categoryId)
+            .map((point) => this.findCategoryPointName(point.kategory, point.kategoryPoint));
           acc[categoryId] = { categoryName, unfilledPoints };
         }
         return acc;
@@ -227,6 +238,13 @@ export default {
 </script>
 
 <style lang="css" scoped>
+select {
+  width: 100%;
+  height: 3rem;
+  text-align-last: center;
+  margin: 1rem 0;
+}
+
 .roll-enter-active,
 .roll-leave-active {
   transition: all 0.5s cubic-bezier(0.37, 0, 0.63, 1);
