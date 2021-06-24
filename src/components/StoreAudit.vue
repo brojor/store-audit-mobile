@@ -6,40 +6,9 @@
         store.name
       }}</option>
     </select>
-    <div v-for="category in categories" :key="category.id" class="kategory">
-      <div
-        @click="dropDown(category.id)"
-        class="kategory-title"
-        :class="{ active: activeKategory === category.id }"
-      >
-        {{ category.name }}
-        <span class="rt-idx">
-          {{
-            `${(
-              (calcCurrentScore(category.id) / calcAvailableScore(category.id)) *
-              100
-            ).toFixed()}%`
-          }}
-        </span>
-      </div>
-      <transition name="roll">
-        <div class="points" v-if="activeKategory === category.id">
-          <CategoryPoint
-            v-for="categoryPoint in category.categoryPoints"
-            :key="categoryPoint.id"
-            :categoryPoint="categoryPoint"
-            :category="category"
-          />
-        </div>
-      </transition>
-    </div>
+    <CategoryWrapper v-for="category in categories" :key="category.id" :category="category" />
     <button @click="sendResults">Odeslat</button>
     <RootModal></RootModal>
-    <div v-if="hiddeAll" class="secret">
-      <form @submit.prevent="unhide">
-        <input type="text" placeholder="Zadejte heslo" v-model="password" />
-      </form>
-    </div>
     <LoginComponent v-if="!userIsLogged" />
   </main>
 </template>
@@ -47,23 +16,19 @@
 <script>
 import RootModal from '@/components/RootModal.vue';
 import LoginComponent from '@/components/Login.vue';
-import CategoryPoint from '@/components/CategoryPoint.vue';
-import EventBus from '../eventBus';
+import CategoryWrapper from '@/components/CategoryWrapper.vue';
 import results from '../results.json';
-// import categories from '../skeleton.json';
 
 export default {
   name: 'StoreAudit',
-  components: { RootModal, LoginComponent, CategoryPoint },
+  components: { RootModal, LoginComponent, CategoryWrapper },
 
   data() {
     return {
       hiddeAll: false,
       password: '',
-      activeKategory: null,
       justEdited: {},
       results,
-      // categories,
       selectedStore: this.$store.state.stores[0].id,
     };
   },
@@ -77,72 +42,8 @@ export default {
     categories() {
       return this.$store.state.categories;
     },
-    // selectedStore() {
-    //   return this.$store.state.stores[0];
-    // },
   },
   methods: {
-    unhide() {
-      if (this.password.toLowerCase() === 'únor') {
-        this.hiddeAll = false;
-      }
-    },
-
-    dropDown(index) {
-      this.activeKategory = this.activeKategory === index ? null : index;
-    },
-    calcAvailableScore(categoryId) {
-      const [currentCategory] = this.categories.filter((category) => category.id === categoryId);
-      return currentCategory.categoryPoints.reduce(
-        (acc, categoryPoint) => acc + categoryPoint.weight,
-        0,
-      );
-    },
-    calcCurrentScore(categoryId) {
-      const resultItems = this.results.filter((point) => point.kategory === categoryId);
-      return resultItems.reduce((acc, point) => {
-        if (point.accepted) {
-          const currentCategory = this.categories.find(
-            (category) => category.id === point.kategory,
-          );
-          const { weight } = currentCategory.categoryPoints.find(
-            (categoryPoint) => categoryPoint.id === point.kategoryPoint,
-          );
-          return acc + weight;
-        }
-        return acc;
-      }, 0);
-    },
-    swipedRight(categoryId, categoryPointId) {
-      this.writeStatus(categoryId, categoryPointId, true);
-    },
-    swipedLeft(categoryId, categoryPointId) {
-      this.writeStatus(categoryId, categoryPointId, false);
-      // samostatná metoda?
-      this.justEdited = { categoryId, categoryPointId };
-      setTimeout(() => {
-        EventBus.$emit('open');
-      }, 500);
-    },
-    writeStatus(categoryId, categoryPointId, value) {
-      const [objToWrite] = this.results.filter(
-        (obj) => obj.kategory === categoryId && obj.kategoryPoint === categoryPointId,
-      );
-      objToWrite.accepted = value;
-      console.log(objToWrite);
-    },
-    calcMoveLength(event) {
-      const positionX = event.touches[0].clientX;
-      const moveLength = positionX - this.posX.start;
-      return moveLength;
-    },
-    writeComment(categoryId, categoryPointId, comment) {
-      const [objToWrite] = this.results.filter(
-        (obj) => obj.kategory === categoryId && obj.kategoryPoint === categoryPointId,
-      );
-      console.log({ objToWrite });
-      objToWrite.comment = comment;
-    },
     sendResults() {
       const unfilled = this.findUnfilledPoints();
       if (unfilled.length) {
@@ -184,12 +85,6 @@ export default {
       return Object.values(mergedByCategory);
     },
   },
-  created() {
-    EventBus.$on('commentAdded', (comment) => {
-      const { categoryId, categoryPointId } = this.justEdited;
-      this.writeComment(categoryId, categoryPointId, comment);
-    });
-  },
 };
 </script>
 
@@ -199,17 +94,6 @@ select {
   height: 3rem;
   text-align-last: center;
   margin: 1rem 0;
-}
-
-.roll-enter-active,
-.roll-leave-active {
-  transition: all 0.5s cubic-bezier(0.37, 0, 0.63, 1);
-  max-height: 2000px;
-}
-
-.roll-enter,
-.roll-leave-to {
-  max-height: 0px;
 }
 
 main {
@@ -225,34 +109,10 @@ h1 {
   text-transform: uppercase;
 }
 
-.kategory {
-  width: 100%;
-  border: 2px solid black;
-  margin: 4px 0;
-  background-color: #eee;
-  overflow: hidden;
-}
-.kategory-title {
-  background-color: #564d51;
-  color: white;
-  padding: 1.5rem 0;
-  font-size: 1.8rem;
-  transition: background-color 0.5s;
-  position: relative;
-}
 .active {
   background-color: #201d1e;
 }
-.points {
-  background-color: #eee;
-}
 
-.rt-idx {
-  font-size: 1.1rem;
-  position: absolute;
-  top: 0.5rem;
-  right: 0.5rem;
-}
 /*--component start--*/
 .secret {
   position: fixed;
