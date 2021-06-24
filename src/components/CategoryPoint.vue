@@ -7,8 +7,8 @@
     }"
     :ref="'touchTarget'"
     @touchstart="touchstart(categoryPoint.id, $event)"
-    @touchend="touchend(category, categoryPoint)"
-    @touchmove="touchmove($event)"
+    @touchend="touchend()"
+    @touchmove="touchmove($event, category, categoryPoint)"
     draggable="true"
   >
     <p>{{ categoryPoint.name }}</p>
@@ -33,26 +33,25 @@ export default {
       this.posX.start = event.touches[0].clientX;
       this.$refs.touchTarget.classList.remove('transformSlow');
     },
-    touchmove(event) {
+    touchmove(event, category, categoryPoint) {
       this.storeMoveLength(event);
-      if (Math.abs(this.moveLength) > 20) {
+      if (Math.abs(this.moveLength) > 25) {
         this.$refs.touchTarget.style.transform = `translate3d(${this.moveLength}px, 0px, 0px)`;
       }
-    },
-    touchend(category, categoryPoint) {
-      this.$refs.touchTarget.style.transform = 'translate3d(0px, 0px, 0px)';
-      this.$refs.touchTarget.classList.add('transformSlow');
-
       if (this.thresholdExceeded()) {
         this.writeStatus(category.id, categoryPoint.id);
       }
+    },
+    touchend() {
+      this.$refs.touchTarget.style.transform = 'translate3d(0px, 0px, 0px)';
+      this.$refs.touchTarget.classList.add('transformSlow');
     },
     storeMoveLength(event) {
       const positionX = event.touches[0].clientX;
       this.moveLength = positionX - this.posX.start;
     },
     thresholdExceeded() {
-      const threshold = window.innerWidth / 3;
+      const threshold = window.innerWidth / 4;
       return Math.abs(this.moveLength) > threshold;
     },
     writeStatus(categoryId, categoryPointId) {

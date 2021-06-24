@@ -46,6 +46,9 @@ export default new Vuex.Store({
     CLOSE_MODAL(state) {
       state.modal.isOpen = false;
     },
+    CHANGE_MODAL_TITLE(state, title) {
+      state.modal.title = title;
+    },
     SET_COMMENTED_POINT_IDS(state, { categoryId, categoryPointId }) {
       state.commentedPoint = { categoryId, categoryPointId };
     },

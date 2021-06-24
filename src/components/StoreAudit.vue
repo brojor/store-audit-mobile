@@ -1,7 +1,7 @@
 <template>
   <main>
     <div class="title-bar">
-        <img class="logo-small" src="@/assets/logo-small.png" alt="logo small" />
+      <img class="logo-small" src="@/assets/logo-small.png" alt="logo small" />
       <h1>Store audit</h1>
     </div>
 
@@ -50,6 +50,7 @@ export default {
       const unfilled = this.$store.getters.unfilledPoints;
       if (unfilled.length) {
         // MODAL error - nejsou vyplněny následující body
+        this.$store.commit('CHANGE_MODAL_TITLE', 'Chybí vyplnit následující body');
         console.log('nejsou vyplněný následující body: ', unfilled);
       } else {
         console.log('Posílám výsledky');
