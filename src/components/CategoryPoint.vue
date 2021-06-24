@@ -68,6 +68,7 @@ export default {
         //   commit('WRITE_STATUS', { accepted: false, categoryId, categoryPointId });
         // });
         console.log('comituju accepted = FALSE');
+        this.$store.dispatch('addComment', { categoryId, categoryPointId });
         this.$store.commit('WRITE_STATUS', { accepted: false, categoryId, categoryPointId });
       }
     },

@@ -8,18 +8,14 @@ import results from '@/results.json';
 
 Vue.use(Vuex);
 
-function isAccepted({ state, categoryId, categoryPointId }) {
-  const { categoryPoints } = state.categories.find((category) => category.id === categoryId);
-  const { accepted } = categoryPoints.find((categoryPoint) => categoryPoint.id === categoryPointId);
-  return accepted;
-}
-
 export default new Vuex.Store({
   state: {
     token: localStorage.getItem('token') || null,
     stores: JSON.parse(localStorage.getItem('stores')) || [],
     categories,
     results,
+    modal: { isOpen: false },
+    commentedPoint: { categoryId: null, categoryPointId: null },
   },
   mutations: {
     SET_TOKEN(state, token) {
@@ -37,6 +33,23 @@ export default new Vuex.Store({
         (categoryPoint) => categoryPoint.id === categoryPointId,
       );
       currentcategoryPoint.accepted = accepted;
+    },
+    WRITE_COMMENT(state, comment) {
+      const { categoryId, categoryPointId } = state.commentedPoint;
+      const { categoryPoints } = state.categories.find((category) => category.id === categoryId);
+      const currentcategoryPoint = categoryPoints.find(
+        (categoryPoint) => categoryPoint.id === categoryPointId,
+      );
+      currentcategoryPoint.comment = comment;
+    },
+    OPEN_MODAL(state) {
+      state.modal.isOpen = true;
+    },
+    CLOSE_MODAL(state) {
+      state.modal.isOpen = false;
+    },
+    SET_COMMENTED_POINT_IDS(state, { categoryId, categoryPointId }) {
+      state.commentedPoint = { categoryId, categoryPointId };
     },
   },
   actions: {
@@ -58,39 +71,9 @@ export default new Vuex.Store({
         })
         .catch((err) => console.log(err));
     },
-    writeStatus({ state, commit }, { swipeDirection, categoryId, categoryPointId }) {
-      const accepted = isAccepted({ state, categoryId, categoryPointId });
-      if (swipeDirection === 'right' && !accepted) {
-        console.log('comituju accepted = TRUE');
-        commit('WRITE_STATUS', { accepted: true, categoryId, categoryPointId });
-      }
-      if (swipeDirection === 'left' && accepted) {
-        // spustVyskakovacíOkno().then(() => {
-        //   commit('WRITE_STATUS', { accepted: false, categoryId, categoryPointId });
-        // });
-        console.log('comituju accepted = FALSE');
-        commit('WRITE_STATUS', { accepted: false, categoryId, categoryPointId });
-      }
-
-      // if (state.results[categoryId][categoryPointId].accepted !== true) {
-      //   commit('WRITE_STATUS', { accepted: true, categoryId, categoryPointId });
-      // }
-
-      // // if not accepted
-      // console.log('vuex - accepted', categoryId, categoryPointId);
-      // console.log('vuex ', state);
-      // console.log(commit);
-    },
-    rejectPoint({ commit, state }, { categoryId, categoryPointId }) {
-      if (state.categories[categoryId][categoryPointId].accepted !== false) {
-        commit('WRITE_STATUS', { accepted: false, categoryId, categoryPointId });
-      }
-      // this.writeStatus(categoryId, categoryPointId, false);
-      // // samostatná metoda?
-      // this.justEdited = { categoryId, categoryPointId };
-      // if not rejected
-      console.log('vuex - reject', categoryId, categoryPointId);
-      console.log(commit);
+    addComment({ commit }, { categoryId, categoryPointId }) {
+      commit('OPEN_MODAL');
+      commit('SET_COMMENTED_POINT_IDS', { categoryId, categoryPointId });
     },
   },
   modules: {},

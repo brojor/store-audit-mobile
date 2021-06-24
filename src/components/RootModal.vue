@@ -11,9 +11,14 @@ export default {
   components: { MyModal },
   data() {
     return {
-      isOpen: null,
+      // isOpen: null,
       info: null,
     };
+  },
+  computed: {
+    isOpen() {
+      return this.$store.state.modal.isOpen;
+    },
   },
   created() {
     EventBus.$on('open', (info) => {
@@ -27,7 +32,7 @@ export default {
   },
   methods: {
     handleClose() {
-      this.isOpen = false;
+      this.$store.commit('CLOSE_MODAL');
     },
     handleKeyup(e) {
       if (e.keyCode === 27) this.handleClose();

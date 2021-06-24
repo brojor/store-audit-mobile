@@ -2,11 +2,7 @@
   <div class="overlay" v-if="isOpen">
     <div class="dialog">
       <div class="title">Přidání poznámky</div>
-      <textarea
-        v-model="message"
-        placeholder="Zde stručně popište problém.."
-        rows="8"
-      ></textarea>
+      <textarea v-model="message" placeholder="Zde stručně popište problém.." rows="8"></textarea>
       <!--       <textarea
         v-model="textAreaText"
         placeholder="Zde stručně popiště problém.."
@@ -20,7 +16,7 @@
 </template>
 
 <script>
-import EventBus from '@/eventBus';
+// import EventBus from '@/eventBus';
 
 export default {
   name: 'MyModal',
@@ -33,9 +29,11 @@ export default {
   },
   methods: {
     handleSubmit() {
-      EventBus.$emit('commentAdded', this.message);
+      // EventBus.$emit('commentAdded', this.message);
+      this.$store.commit('WRITE_COMMENT', this.message);
       this.message = '';
-      this.$emit('close');
+      // this.$emit('close');
+      this.$store.commit('CLOSE_MODAL');
     },
   },
 };
