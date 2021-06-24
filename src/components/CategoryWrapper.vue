@@ -80,14 +80,15 @@ export default {
 <style>
 .kategory {
   width: 100%;
-  border: 2px solid black;
+  /* border: 2px solid black; */
   border-radius: 4px;
   margin: 4px 0;
   background-color: #eee;
   overflow: hidden;
 }
 .kategory-title {
-  background-color: #564d51;
+  /* background-color: #564d51; */
+  background-color: #262d2d;
   color: white;
   padding: 1.5rem 0;
   font-size: 1.8rem;

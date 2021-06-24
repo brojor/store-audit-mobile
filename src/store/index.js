@@ -12,7 +12,7 @@ export default new Vuex.Store({
     token: localStorage.getItem('token') || null,
     stores: JSON.parse(localStorage.getItem('stores')) || [],
     categories,
-    modal: { isOpen: false },
+    modal: { isOpen: false, title: 'Přidání poznámky' },
     commentedPoint: { categoryId: null, categoryPointId: null },
   },
   mutations: {
@@ -104,9 +104,9 @@ export default new Vuex.Store({
     },
     unfilledPoints(state) {
       return state.categories.reduce((acc, category) => {
-        const unfilledPoints = category.categoryPoints.filter(
-          (categoryPoint) => categoryPoint.accepted === null,
-        ).map((categoryPoint) => categoryPoint.name);
+        const unfilledPoints = category.categoryPoints
+          .filter((categoryPoint) => categoryPoint.accepted === null)
+          .map((categoryPoint) => categoryPoint.name);
         const categoryName = category.name;
         if (unfilledPoints.length) {
           acc.push({ categoryName, unfilledPoints });

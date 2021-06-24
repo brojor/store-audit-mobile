@@ -13,7 +13,13 @@
       />
     </label>
     <label for="password">
-      <input class="rectangle" type="text" name="password" v-model="password" placeholder="Heslo" />
+      <input
+        class="rectangle"
+        type="password"
+        name="password"
+        v-model="password"
+        placeholder="Heslo"
+      />
     </label>
     <button @click="submit" class="rectangle submit">Přihlásit se</button>
   </div>

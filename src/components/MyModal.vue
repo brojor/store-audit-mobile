@@ -1,7 +1,7 @@
 <template>
   <div class="overlay" v-if="isOpen">
     <div class="dialog">
-      <div class="title">Přidání poznámky</div>
+      <div class="title">{{$store.state.modal.title}}</div>
       <textarea v-model="message" placeholder="Zde stručně popište problém.." rows="8"></textarea>
       <!--       <textarea
         v-model="textAreaText"
@@ -70,7 +70,9 @@ export default {
   padding: 1.5rem 0;
   margin-bottom: 1rem;
   font-weight: bold;
-  background-color: #564d51;
+  /* background-color: #564d51; */
+  background-color: #001414;
+  background-color: #262d2d;
   color: white;
 }
 textarea {
@@ -82,7 +84,8 @@ textarea {
 }
 
 .dialog button {
-  background-color: #fe8317;
+  /* background-color: #fe8317; */
+  background-color: #e60001;
   margin: 1.5rem;
   padding: 1rem 3.5rem;
   color: white;

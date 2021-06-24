@@ -80,7 +80,8 @@ export default {
 .point {
   border-top: 1px solid black;
   padding: 2.5rem 1.5rem;
-  background-color: #ffdec2;
+  /* background-color: #ffdec2; */
+  background-color: #edddd4;
   font-size: 1.6rem;
   position: relative;
 }
@@ -88,11 +89,20 @@ export default {
   transition: transform 0.25s;
 }
 .accepted {
-  background-color: #3ddc97;
-  color: white;
+  /* background-c olor: #3ddc97;
+  background-color: #9BE564;
+  background-color: #26C485;  */
+  /* background-color: #B5D6B2; */
+  color: rgb(34, 163, 34);
+  font-weight: 600;
 }
 .rejected {
-  background-color: #f0544f;
+  /* background-color: #DD614A; */
+  /* background-color: #BD3B3A; */
   color: white;
+  color: #dd614a;
+  color: red;
+  font-weight: 600;
+
 }
 </style>

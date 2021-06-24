@@ -1,6 +1,10 @@
 <template>
   <main>
-    <h1>Store audit</h1>
+    <div class="title-bar">
+        <img class="logo-small" src="@/assets/logo-small.png" alt="logo small" />
+      <h1>Store audit</h1>
+    </div>
+
     <select name="selectedStore" id="selectedStore" v-model="selectedStore">
       <option v-for="(store, index) in stores" :key="index" :value="store.id">{{
         store.name
@@ -61,13 +65,25 @@ export default {
 </script>
 
 <style lang="css" scoped>
+.title-bar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+}
+img.logo-small {
+  max-width: 100%;
+  height: 3rem;
+}
 select {
+  outline: none;
   width: 100%;
   height: 4rem;
-  border: 2px solid black;
+  /* border: 2px solid black; */
+  border: none;
   border-radius: 4px;
   text-align-last: center;
-margin-bottom: 1rem;
+  margin-bottom: 1rem;
 }
 
 main {
@@ -78,20 +94,22 @@ main {
   padding: 0.5rem;
 }
 h1 {
-  font-size: 3rem;
-  margin: 1rem;
+  font-size: 2.2rem;
+  /* margin: 1rem; */
+  margin-left: 1rem;
   text-transform: uppercase;
+  color: white;
 }
-
-.active {
+‹ .active {
   background-color: #201d1e;
 }
 button.submit-main {
   width: 100%;
-  border: 2px solid black;
+  /* border: 2px solid black; */
+  border: none;
   border-radius: 4px;
   margin: 4px 0;
-  margin-top: .5rem;
+  margin-top: 0.5rem;
   height: 55px;
   overflow: visible;
   background-color: #e60001;
