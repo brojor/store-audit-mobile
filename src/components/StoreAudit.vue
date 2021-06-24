@@ -7,7 +7,7 @@
       }}</option>
     </select>
     <CategoryWrapper v-for="category in categories" :key="category.id" :category="category" />
-    <button @click="sendResults">Odeslat</button>
+    <button class="submit-main" @click="sendResults">Odeslat</button>
     <RootModal></RootModal>
     <LoginComponent v-if="!userIsLogged" />
   </main>
@@ -63,9 +63,11 @@ export default {
 <style lang="css" scoped>
 select {
   width: 100%;
-  height: 3rem;
+  height: 4rem;
+  border: 2px solid black;
+  border-radius: 4px;
   text-align-last: center;
-  margin: 1rem 0;
+margin-bottom: 1rem;
 }
 
 main {
@@ -77,33 +79,25 @@ main {
 }
 h1 {
   font-size: 3rem;
-  margin: 2rem;
+  margin: 1rem;
   text-transform: uppercase;
 }
 
 .active {
   background-color: #201d1e;
 }
-
-/*--component start--*/
-.secret {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: flex-start;
-  background-color: rgba(0, 0, 0, 0.1);
-  overflow: hidden;
-  backdrop-filter: blur(8px);
+button.submit-main {
+  width: 100%;
+  border: 2px solid black;
+  border-radius: 4px;
+  margin: 4px 0;
+  margin-top: .5rem;
+  height: 55px;
+  overflow: visible;
+  background-color: #e60001;
+  color: white;
+  font-size: 2rem;
+  font-family: 'Avenir Next', 'Avenir', sans-serif;
+  font-weight: 600;
 }
-.secret input {
-  margin-top: 33vh;
-  height: 3rem;
-  padding: 1rem;
-  text-align: center;
-}
-/*--component end--*/
 </style>

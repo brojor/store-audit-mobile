@@ -81,6 +81,7 @@ export default {
 .kategory {
   width: 100%;
   border: 2px solid black;
+  border-radius: 4px;
   margin: 4px 0;
   background-color: #eee;
   overflow: hidden;
