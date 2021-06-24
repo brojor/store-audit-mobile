@@ -4,7 +4,6 @@ import AuthService from '@/services/AuthService';
 import Api from '@/services/Api';
 
 import categories from '@/skeleton.json';
-import results from '@/results.json';
 
 Vue.use(Vuex);
 
@@ -13,7 +12,6 @@ export default new Vuex.Store({
     token: localStorage.getItem('token') || null,
     stores: JSON.parse(localStorage.getItem('stores')) || [],
     categories,
-    results,
     modal: { isOpen: false },
     commentedPoint: { categoryId: null, categoryPointId: null },
   },
@@ -90,6 +88,18 @@ export default new Vuex.Store({
         (categoryPoint) => categoryPoint.id === categoryPointId,
       );
       return accepted;
+    },
+    results(state) {
+      return state.categories
+        .map((category) => category.categoryPoints.map((catPoint) => {
+          const { comment, accepted, id: categoryPoint } = catPoint;
+          return {
+            comment,
+            accepted,
+            categoryPoint,
+            category: category.id,
+          };
+        })).flat();
     },
   },
 });
