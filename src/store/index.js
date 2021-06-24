@@ -89,6 +89,7 @@ export default new Vuex.Store({
       );
       return accepted;
     },
+    // prettier-ignore
     results(state) {
       return state.categories
         .map((category) => category.categoryPoints.map((catPoint) => {
@@ -100,6 +101,18 @@ export default new Vuex.Store({
             category: category.id,
           };
         })).flat();
+    },
+    unfilledPoints(state) {
+      return state.categories.reduce((acc, category) => {
+        const unfilledPoints = category.categoryPoints.filter(
+          (categoryPoint) => categoryPoint.accepted === null,
+        ).map((categoryPoint) => categoryPoint.name);
+        const categoryName = category.name;
+        if (unfilledPoints.length) {
+          acc.push({ categoryName, unfilledPoints });
+        }
+        return acc;
+      }, []);
     },
   },
 });

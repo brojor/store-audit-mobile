@@ -17,7 +17,6 @@
 import RootModal from '@/components/RootModal.vue';
 import LoginComponent from '@/components/Login.vue';
 import CategoryWrapper from '@/components/CategoryWrapper.vue';
-import results from '../results.json';
 
 export default {
   name: 'StoreAudit',
@@ -28,7 +27,6 @@ export default {
       hiddeAll: false,
       password: '',
       justEdited: {},
-      results,
       selectedStore: this.$store.state.stores[0].id,
     };
   },
@@ -45,7 +43,7 @@ export default {
   },
   methods: {
     sendResults() {
-      const unfilled = this.findUnfilledPoints();
+      const unfilled = this.$store.getters.unfilledPoints;
       if (unfilled.length) {
         // MODAL error - nejsou vyplněny následující body
         console.log('nejsou vyplněný následující body: ', unfilled);
@@ -53,36 +51,10 @@ export default {
         console.log('Posílám výsledky');
         const result = {
           storeId: this.selectedStore,
-          results: this.results,
+          results: this.$store.getters.results,
         };
         console.log(result);
       }
-    },
-    findCategoryName(categoryId) {
-      const { name: categoryName } = this.categories.find((category) => category.id === categoryId);
-      return categoryName;
-    },
-    findCategoryPointName(categoryId, categoryPointId) {
-      const { categoryPoints } = this.categories.find((category) => category.id === categoryId);
-      const { name: categoryPointName } = categoryPoints.find(
-        (categoryPoint) => categoryPoint.id === categoryPointId,
-      );
-      return categoryPointName;
-    },
-    findUnfilledPoints() {
-      const unfilled = this.results.filter((result) => result.accepted === null);
-      const mergedByCategory = unfilled.reduce((acc, result) => {
-        const categoryId = result.kategory;
-        if (!(categoryId in acc)) {
-          const categoryName = this.findCategoryName(categoryId);
-          const unfilledPoints = unfilled
-            .filter((res) => res.kategory === categoryId)
-            .map((point) => this.findCategoryPointName(point.kategory, point.kategoryPoint));
-          acc[categoryId] = { categoryName, unfilledPoints };
-        }
-        return acc;
-      }, {});
-      return Object.values(mergedByCategory);
     },
   },
 };
