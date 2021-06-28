@@ -18,6 +18,7 @@ export default new Vuex.Store({
     modal: { isOpen: false, title: '' },
     commentedPoint: { categoryId: null, categoryPointId: null },
     unfilledPoints: [],
+    activeCategory: null,
   },
   mutations: {
     SET_TOKEN(state, token) {
@@ -59,6 +60,9 @@ export default new Vuex.Store({
     SET_UNFILLED_POINTS(state, unfilledPoints) {
       console.log('hello from mutation', { unfilledPoints });
       state.unfilledPoints = unfilledPoints;
+    },
+    SET_ACTIVE_CATEGORY(state, categoryId) {
+      state.activeCategory = categoryId;
     },
   },
   actions: {

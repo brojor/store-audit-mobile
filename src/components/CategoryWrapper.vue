@@ -32,17 +32,27 @@ export default {
   name: 'CategoryWrapper',
   components: { CategoryPoint },
   props: ['category'],
-  data() {
-    return {
-      activeKategory: null,
-    };
-  },
+  // data() {
+  //   return {
+  //     activeKategory: null,
+  //   };
+  // },
   computed: {
     results() {
       return this.$store.getters.results;
     },
     categories() {
       return this.$store.state.categories;
+    },
+    activeKategory: {
+      // getter
+      get() {
+        return this.$store.state.activeCategory;
+      },
+      // setter
+      set(categoryId) {
+        this.$store.commit('SET_ACTIVE_CATEGORY', categoryId);
+      },
     },
   },
   methods: {
@@ -70,8 +80,8 @@ export default {
         return acc;
       }, 0);
     },
-    dropDown(index) {
-      this.activeKategory = this.activeKategory === index ? null : index;
+    dropDown(categoryId) {
+      this.activeKategory = this.activeKategory === categoryId ? null : categoryId;
     },
   },
 };
