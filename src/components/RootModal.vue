@@ -1,10 +1,12 @@
 <template>
-  <MyModal :isOpen="isOpen" :info="info" @close="handleClose"> </MyModal>
+  <MyModal :isOpen="isOpen" :info="info" @close="handleClose">
+     <component :is="$store.state.modal.component" @onClose="handleClose"/>
+  </MyModal>
 </template>
 
 <script>
 import MyModal from '@/components/MyModal.vue';
-import EventBus from '../eventBus';
+// import EventBus from '../eventBus';
 
 export default {
   name: 'RootModal',
@@ -21,10 +23,10 @@ export default {
     },
   },
   created() {
-    EventBus.$on('open', (info) => {
-      this.isOpen = true;
-      this.info = info;
-    });
+    // EventBus.$on('open', (info) => {
+    //   this.isOpen = true;
+    //   this.info = info;
+    // });
     document.addEventListener('keyup', this.handleKeyup);
   },
   beforeDestroy() {

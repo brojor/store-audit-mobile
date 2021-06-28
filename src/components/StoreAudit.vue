@@ -49,9 +49,7 @@ export default {
     sendResults() {
       const unfilled = this.$store.getters.unfilledPoints;
       if (unfilled.length) {
-        // MODAL error - nejsou vyplněny následující body
-        this.$store.commit('CHANGE_MODAL_TITLE', 'Chybí vyplnit následující body');
-        console.log('nejsou vyplněný následující body: ', unfilled);
+        this.$store.dispatch('showUnfilledPointsWarning', unfilled);
       } else {
         console.log('Posílám výsledky');
         const result = {

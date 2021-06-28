@@ -5,6 +5,9 @@ import Api from '@/services/Api';
 
 import categories from '@/skeleton.json';
 
+import UnfilledPoints from '@/components/modal/UnfilledPoints.vue';
+import WriteComment from '@/components/modal/WriteComment.vue';
+
 Vue.use(Vuex);
 
 export default new Vuex.Store({
@@ -12,8 +15,9 @@ export default new Vuex.Store({
     token: localStorage.getItem('token') || null,
     stores: JSON.parse(localStorage.getItem('stores')) || [],
     categories,
-    modal: { isOpen: false, title: 'Přidání poznámky' },
+    modal: { isOpen: false, title: '' },
     commentedPoint: { categoryId: null, categoryPointId: null },
+    unfilledPoints: [],
   },
   mutations: {
     SET_TOKEN(state, token) {
@@ -40,17 +44,21 @@ export default new Vuex.Store({
       );
       currentcategoryPoint.comment = comment;
     },
-    OPEN_MODAL(state) {
+    OPEN_MODAL(state, { title, component }) {
       state.modal.isOpen = true;
+
+      state.modal.title = title;
+      state.modal.component = component;
     },
     CLOSE_MODAL(state) {
       state.modal.isOpen = false;
     },
-    CHANGE_MODAL_TITLE(state, title) {
-      state.modal.title = title;
-    },
     SET_COMMENTED_POINT_IDS(state, { categoryId, categoryPointId }) {
       state.commentedPoint = { categoryId, categoryPointId };
+    },
+    SET_UNFILLED_POINTS(state, unfilledPoints) {
+      console.log('hello from mutation', { unfilledPoints });
+      state.unfilledPoints = unfilledPoints;
     },
   },
   actions: {
@@ -73,8 +81,14 @@ export default new Vuex.Store({
         .catch((err) => console.log(err));
     },
     addComment({ commit }, { categoryId, categoryPointId }) {
-      commit('OPEN_MODAL');
+      commit('OPEN_MODAL', { title: 'Přidání poznámky', component: WriteComment });
       commit('SET_COMMENTED_POINT_IDS', { categoryId, categoryPointId });
+    },
+    showUnfilledPointsWarning({ commit }, unfilledPoints) {
+      console.log('hello from actions', { unfilledPoints });
+
+      commit('OPEN_MODAL', { title: 'Chybí vyplnit následující body', component: UnfilledPoints });
+      commit('SET_UNFILLED_POINTS', unfilledPoints);
     },
   },
   modules: {},
