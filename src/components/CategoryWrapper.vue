@@ -32,11 +32,6 @@ export default {
   name: 'CategoryWrapper',
   components: { CategoryPoint },
   props: ['category'],
-  // data() {
-  //   return {
-  //     activeKategory: null,
-  //   };
-  // },
   computed: {
     results() {
       return this.$store.getters.results;
@@ -45,11 +40,9 @@ export default {
       return this.$store.state.categories;
     },
     activeKategory: {
-      // getter
       get() {
         return this.$store.state.activeCategory;
       },
-      // setter
       set(categoryId) {
         this.$store.commit('SET_ACTIVE_CATEGORY', categoryId);
       },
@@ -66,19 +59,25 @@ export default {
     },
     // předělat na vuex Getter
     calcCurrentScore(categoryId) {
-      const resultItems = this.results.filter((point) => point.kategory === categoryId);
+      const resultItems = this.results.filter((point) => point.category === categoryId);
       return resultItems.reduce((acc, point) => {
         if (point.accepted) {
           const currentCategory = this.categories.find(
-            (category) => category.id === point.kategory,
+            (category) => category.id === point.category,
           );
           const { weight } = currentCategory.categoryPoints.find(
-            (categoryPoint) => categoryPoint.id === point.kategoryPoint,
+            (categoryPoint) => categoryPoint.id === point.categoryPoint,
           );
           return acc + weight;
         }
         return acc;
       }, 0);
+    },
+    calcSuccessRate(categoryId) {
+      return {
+        available: this.calcAvailableScore(categoryId),
+        current: this.calcCurrentScore(categoryId),
+      };
     },
     dropDown(categoryId) {
       this.activeKategory = this.activeKategory === categoryId ? null : categoryId;
