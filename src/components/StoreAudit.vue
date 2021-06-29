@@ -21,6 +21,8 @@
 import RootModal from '@/components/RootModal.vue';
 import LoginComponent from '@/components/Login.vue';
 import CategoryWrapper from '@/components/CategoryWrapper.vue';
+import DataService from '@/services/DataService';
+import Warning from '@/components/modal/Warning.vue';
 
 export default {
   name: 'StoreAudit',
@@ -31,7 +33,6 @@ export default {
       hiddeAll: false,
       password: '',
       justEdited: {},
-      selectedStore: this.$store.state.stores[0].id,
     };
   },
   computed: {
@@ -44,6 +45,12 @@ export default {
     categories() {
       return this.$store.state.categories;
     },
+    selectedStore() {
+      if (this.$store.state.stores.length) {
+        return this.$store.state.stores[0].id;
+      }
+      return null;
+    },
   },
   methods: {
     sendResults() {
@@ -51,12 +58,21 @@ export default {
       if (unfilled.length) {
         this.$store.dispatch('showUnfilledPointsWarning', unfilled);
       } else {
-        console.log('Posílám výsledky');
-        const result = {
+        const payload = {
           storeId: this.selectedStore,
           results: this.$store.getters.results,
         };
-        console.log(result);
+        DataService.sendResults(payload)
+          .then(({ data }) => {
+            if (data.success) {
+              const message = 'Výsledky auditu byly úspěšně uloženy do databáze';
+              this.$store.commit('OPEN_MODAL', { title: 'Dokončeno', component: Warning, message });
+            } else {
+              const { message } = data;
+              this.$store.commit('OPEN_MODAL', { title: 'Chyba', component: Warning, message });
+            }
+          })
+          .catch((err) => console.log(err));
       }
     },
   },

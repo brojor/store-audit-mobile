@@ -15,7 +15,7 @@ export default new Vuex.Store({
     token: localStorage.getItem('token') || null,
     stores: JSON.parse(localStorage.getItem('stores')) || [],
     categories,
-    modal: { isOpen: false, title: '' },
+    modal: { isOpen: false, title: '', message: '' },
     commentedPoint: { categoryId: null, categoryPointId: null },
     unfilledPoints: [],
     activeCategory: null,
@@ -45,10 +45,11 @@ export default new Vuex.Store({
       );
       currentcategoryPoint.comment = comment;
     },
-    OPEN_MODAL(state, { title, component }) {
+    OPEN_MODAL(state, { title, component, message = '' }) {
       state.modal.isOpen = true;
 
       state.modal.title = title;
+      state.modal.message = message;
       state.modal.component = component;
     },
     CLOSE_MODAL(state) {
