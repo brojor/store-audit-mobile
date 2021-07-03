@@ -1,19 +1,19 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
-import AuthService from '@/services/AuthService';
-import Api from '@/services/Api';
 
 import categories from '@/skeleton.json';
 
 import UnfilledPoints from '@/components/modal/UnfilledPoints.vue';
 import WriteComment from '@/components/modal/WriteComment.vue';
 
+import auth from './modules/auth';
+
 Vue.use(Vuex);
 
 export default new Vuex.Store({
   state: {
-    token: localStorage.getItem('token') || null,
-    stores: JSON.parse(localStorage.getItem('stores')) || [],
+    // token: localStorage.getItem('token') || null,
+    // stores: JSON.parse(localStorage.getItem('stores')) || [],
     categories,
     modal: { isOpen: false, title: '', message: '' },
     commentedPoint: { categoryId: null, categoryPointId: null },
@@ -21,15 +21,15 @@ export default new Vuex.Store({
     activeCategory: null,
   },
   mutations: {
-    SET_TOKEN(state, token) {
-      state.token = token;
-      localStorage.setItem('token', token);
-      Api.defaults.headers.common.Authorization = `Bearer ${token}`;
-    },
-    SET_STORES(state, stores) {
-      state.stores = stores;
-      localStorage.setItem('stores', JSON.stringify(stores));
-    },
+    // SET_TOKEN(state, token) {
+    //   state.token = token;
+    //   localStorage.setItem('token', token);
+    //   Api.defaults.headers.common.Authorization = `Bearer ${token}`;
+    // },
+    // SET_STORES(state, stores) {
+    //   state.stores = stores;
+    //   localStorage.setItem('stores', JSON.stringify(stores));
+    // },
     WRITE_STATUS(state, { accepted, categoryId, categoryPointId }) {
       const { categoryPoints } = state.categories.find((category) => category.id === categoryId);
       const currentcategoryPoint = categoryPoints.find(
@@ -67,24 +67,24 @@ export default new Vuex.Store({
     },
   },
   actions: {
-    login({ commit, dispatch }, credentials) {
-      return AuthService.login(credentials)
-        .then(({ data }) => {
-          console.log('actions-token', data.token);
-          commit('SET_TOKEN', data.token);
-          dispatch('getStores');
-        })
-        .catch((err) => {
-          console.log(err.response.data);
-        });
-    },
-    getStores({ commit }) {
-      return Api.get('/stores')
-        .then(({ data }) => {
-          commit('SET_STORES', data.stores);
-        })
-        .catch((err) => console.log(err));
-    },
+    // login({ commit, dispatch }, credentials) {
+    //   return AuthService.login(credentials)
+    //     .then(({ data }) => {
+    //       console.log('actions-token', data.token);
+    //       commit('SET_TOKEN', data.token);
+    //       dispatch('getStores');
+    //     })
+    //     .catch((err) => {
+    //       console.log(err.response.data);
+    //     });
+    // },
+    // getStores({ commit }) {
+    //   return Api.get('/stores')
+    //     .then(({ data }) => {
+    //       commit('SET_STORES', data.stores);
+    //     })
+    //     .catch((err) => console.log(err));
+    // },
     addComment({ commit }, { categoryId, categoryPointId }) {
       commit('OPEN_MODAL', { title: 'Přidání poznámky', component: WriteComment });
       commit('SET_COMMENTED_POINT_IDS', { categoryId, categoryPointId });
@@ -96,14 +96,14 @@ export default new Vuex.Store({
       commit('SET_UNFILLED_POINTS', unfilledPoints);
     },
   },
-  modules: {},
+
   getters: {
-    userIsLogged: (state) => {
-      if (state.token) {
-        return true;
-      }
-      return false;
-    },
+    // userIsLogged: (state) => {
+    //   if (state.token) {
+    //     return true;
+    //   }
+    //   return false;
+    // },
     categoryPointIsAccepted: (state) => (categoryId, categoryPointId) => {
       const { categoryPoints } = state.categories.find((category) => category.id === categoryId);
       const { accepted } = categoryPoints.find(
@@ -137,4 +137,5 @@ export default new Vuex.Store({
       }, []);
     },
   },
+  modules: { auth },
 });

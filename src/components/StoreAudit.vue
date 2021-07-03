@@ -40,14 +40,14 @@ export default {
       return this.$store.getters.userIsLogged;
     },
     stores() {
-      return this.$store.state.stores;
+      return this.$store.state.auth.stores;
     },
     categories() {
       return this.$store.state.categories;
     },
     selectedStore() {
-      if (this.$store.state.stores.length) {
-        return this.$store.state.stores[0].id;
+      if (this.$store.state.auth.stores.length) {
+        return this.$store.state.auth.stores[0].id;
       }
       return null;
     },
