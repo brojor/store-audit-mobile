@@ -1,16 +1,21 @@
 <template>
-  <div id="app">
-    <StoreAudit />
+  <div>
+    <div id="app">
+      <StoreAudit />
+    </div>
+    <only-mobile-warning />
   </div>
 </template>
 
 <script>
 import StoreAudit from '@/components/StoreAudit.vue';
+import OnlyMobileWarning from './components/OnlyMobileWarning.vue';
 
 export default {
   name: 'App',
   components: {
     StoreAudit,
+    OnlyMobileWarning,
   },
 };
 </script>

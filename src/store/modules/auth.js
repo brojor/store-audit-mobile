@@ -46,7 +46,7 @@ const actions = {
       .catch((err) => console.log(err));
   },
   logout({ commit }) {
-    commit('SET_TOKEN', null);
+    commit('SET_TOKEN', '');
   },
 };
 
