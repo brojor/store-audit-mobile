@@ -3,6 +3,7 @@
     <div class="title-bar">
       <img class="logo-small" src="@/assets/logo-small.png" alt="logo small" />
       <h1>Store audit</h1>
+      <Logout @click.native="$store.dispatch('logout')"/>
     </div>
 
     <select name="selectedStore" id="selectedStore" v-model="selectedStore">
@@ -23,10 +24,16 @@ import LoginComponent from '@/components/Login.vue';
 import CategoryWrapper from '@/components/CategoryWrapper.vue';
 import DataService from '@/services/DataService';
 import Warning from '@/components/modal/Warning.vue';
+import Logout from '@/components/icons/Logout.vue';
 
 export default {
   name: 'StoreAudit',
-  components: { RootModal, LoginComponent, CategoryWrapper },
+  components: {
+    RootModal,
+    LoginComponent,
+    CategoryWrapper,
+    Logout,
+  },
 
   data() {
     return {
