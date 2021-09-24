@@ -3,7 +3,7 @@
     <div class="title-bar">
       <img class="logo-small" src="@/assets/logo-small.png" alt="logo small" />
       <h1>Store audit</h1>
-      <Logout @click.native="$store.dispatch('logout')"/>
+      <Logout @click.native="$store.dispatch('logout')" />
     </div>
 
     <select name="selectedStore" id="selectedStore" v-model="selectedStore">
@@ -12,14 +12,14 @@
       }}</option>
     </select>
     <CategoryWrapper v-for="category in categories" :key="category.id" :category="category" />
-    <button class="submit-main" @click="sendResults">Odeslat</button>
+    <button class="btn btn-w100" @click="sendResults">Odeslat</button>
     <RootModal></RootModal>
     <LoginComponent v-if="!userIsLogged" />
   </main>
 </template>
 
 <script>
-import RootModal from '@/components/RootModal.vue';
+import RootModal from '@/components/modal/RootModal.vue';
 import LoginComponent from '@/components/Login.vue';
 import CategoryWrapper from '@/components/CategoryWrapper.vue';
 import DataService from '@/services/DataService';
@@ -61,7 +61,7 @@ export default {
   },
   methods: {
     sendResults() {
-      const unfilled = this.$store.getters.unfilledPoints;
+      const unfilled = this.$store.getters.listOfUnfilledItems;
       if (unfilled.length) {
         this.$store.dispatch('showUnfilledPointsWarning', unfilled);
       } else {
@@ -125,19 +125,14 @@ h1 {
 ‹ .active {
   background-color: #201d1e;
 }
-button.submit-main {
+.btn-w100 {
   width: 100%;
   /* border: 2px solid black; */
-  border: none;
-  border-radius: 4px;
+
   margin: 4px 0;
   margin-top: 0.5rem;
   height: 55px;
   overflow: visible;
-  background-color: #e60001;
-  color: white;
   font-size: 2rem;
-  font-family: 'Avenir Next', 'Avenir', sans-serif;
-  font-weight: 600;
 }
 </style>

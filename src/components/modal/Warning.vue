@@ -1,7 +1,7 @@
 <template>
   <div>
     <p>{{ modal.message }}</p>
-    <button @click="$store.commit('CLOSE_MODAL')" >ok</button>
+    <button @click="$store.commit('CLOSE_MODAL')" class="btn btn-small">ok</button>
   </div>
 </template>
 
@@ -18,5 +18,6 @@ export default {
 <style scoped>
 p {
   font-size: 1.6rem;
+  padding: 4rem 1rem;
 }
 </style>

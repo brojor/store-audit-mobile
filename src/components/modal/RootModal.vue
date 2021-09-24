@@ -1,32 +1,21 @@
 <template>
-  <MyModal :isOpen="isOpen" :info="info" @close="handleClose">
+  <BaseModal :isOpen="isOpen" @close="handleClose">
      <component :is="$store.state.modal.component" @onClose="handleClose"/>
-  </MyModal>
+  </BaseModal>
 </template>
 
 <script>
-import MyModal from '@/components/MyModal.vue';
-// import EventBus from '../eventBus';
+import BaseModal from './BaseModal.vue';
 
 export default {
   name: 'RootModal',
-  components: { MyModal },
-  data() {
-    return {
-      // isOpen: null,
-      info: null,
-    };
-  },
+  components: { BaseModal },
   computed: {
     isOpen() {
       return this.$store.state.modal.isOpen;
     },
   },
   created() {
-    // EventBus.$on('open', (info) => {
-    //   this.isOpen = true;
-    //   this.info = info;
-    // });
     document.addEventListener('keyup', this.handleKeyup);
   },
   beforeDestroy() {

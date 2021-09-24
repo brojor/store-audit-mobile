@@ -2,28 +2,40 @@
 
 # abort on errors
 set -e
-# create vue config file
-echo "module.exports = {
-  publicPath:
-    process.env.NODE_ENV === 'production'
-      ? '/$1/'
-      : '/',
-};" > vue.config.js
 
-# build
+CURRENTDIR=${PWD##*/}
+PARRENTDIR=$(basename ${PWD%/*})
+
+if  [[ $1 = "-e" ]]; then
+    echo "Zadejte název domény:"
+    read CNAME
+    echo $CNAME > CNAME
+    echo "module.exports = { publicPath: '/' };" > vue.config.js
+else
+    # create vue config file
+    echo "module.exports = {
+      publicPath:
+        process.env.NODE_ENV === 'production'
+          ? '/$PARRENTDIR-$CURRENTDIR/'
+          : '/',
+    };" > vue.config.js
+fi
+
 npm run build
 
-# navigate into the build output directory
 cd dist
+# if [[ -v CNAME ]]; then
+#     echo $CNAME > CNAME
+# fi
+if [[ ! -z "$CNAME" ]]; then
+    echo "Existuje (cname)"
+    echo $CNAME > CNAME
+fi
 
-# if you are deploying to a custom domain
-# echo 'www.example.com' > CNAME
+
 
 git init
 git add -A
 git commit -m 'deploy'
-
-# if you are deploying to https://<USERNAME>.github.io/<REPO>
-git push -f git@github.com:brojor/$1.git master:gh-pages
-
-cd -
+git remote add origin git@github.com:brojor/$PARRENTDIR-$CURRENTDIR.git
+git push -f origin master:gh-pages

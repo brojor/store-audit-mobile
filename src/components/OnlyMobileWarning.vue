@@ -1,17 +1,11 @@
 <template>
   <div v-if="windowWidth > 767" class="not-for-desktop">
     <p class="message">Tato aplikace je určena pouze pro mobilní zařízení</p>
-    <button @click="showLog">pressmee</button>
   </div>
 </template>
 
 <script>
 export default {
-  methods: {
-    showLog() {
-      console.log(this.windowWidth);
-    },
-  },
   computed: {
     windowWidth() {
       return window.innerWidth;

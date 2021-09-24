@@ -39,4 +39,18 @@ html {
   text-align: center;
   background-color: #001414;
 }
+.btn {
+  border: none;
+  border-radius: 4px;
+  background-color: #e60001;
+  color: white;
+  font-family: 'Avenir Next', 'Avenir', sans-serif;
+  font-weight: 600;
+  font-size: 1.8rem;
+}
+.btn-small {
+  padding: 1rem 2rem;
+  margin: 1rem;
+  min-width: 100px;
+}
 </style>

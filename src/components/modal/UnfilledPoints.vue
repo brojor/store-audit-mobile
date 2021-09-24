@@ -1,22 +1,25 @@
 <template>
   <div class="unfilled-points">
-    <div v-for="(abcde, index) in unfilledPoints" :key="index">
-      <h1>{{ abcde.categoryName }}</h1>
+    <div v-for="(category, categoryIndex) in listOfUnfilledItems" :key="categoryIndex">
+      <h1>{{ category.name }}</h1>
       <ul>
-        <li v-for="(categoryPoint, index) in abcde.unfilledPoints" :key="index">
+        <li
+          v-for="(categoryPoint, categoryPointIndex) in category.unfilledPoints"
+          :key="categoryPointIndex"
+        >
           {{ categoryPoint }}
         </li>
       </ul>
     </div>
-    <button @click="submit">Beru na vědomí</button>
+    <button @click="submit" class="btn btn-small">Beru na vědomí</button>
   </div>
 </template>
 
 <script>
 export default {
   computed: {
-    unfilledPoints() {
-      return this.$store.state.unfilledPoints;
+    listOfUnfilledItems() {
+      return this.$store.getters.listOfUnfilledItems;
     },
   },
   methods: {
@@ -31,13 +34,13 @@ export default {
 .unfilled-points {
   overflow: scroll;
   max-height: 75vh;
+  padding-bottom: 2rem;
 }
 h1 {
-  /* margin-top: 2rem; */
   font-size: 1.6rem;
 }
 ul {
-  padding-left: 3rem;
+  padding-left: 2rem;
   display: list-item;
   margin-bottom: 2rem;
 }
@@ -47,4 +50,5 @@ li {
   text-align: left;
   display: list-item;
 }
+
 </style>

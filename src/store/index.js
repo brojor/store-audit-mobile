@@ -17,7 +17,7 @@ export default new Vuex.Store({
     categories,
     modal: { isOpen: false, title: '', message: '' },
     commentedPoint: { categoryId: null, categoryPointId: null },
-    unfilledPoints: [],
+    // unfilledPoints: [],
     activeCategory: null,
   },
   mutations: {
@@ -124,16 +124,16 @@ export default new Vuex.Store({
           };
         })).flat();
     },
-    unfilledPoints(state) {
-      return state.categories.reduce((acc, category) => {
+    listOfUnfilledItems(state) {
+      return state.categories.reduce((arr, category) => {
+        const { name } = category;
         const unfilledPoints = category.categoryPoints
           .filter((categoryPoint) => categoryPoint.accepted === null)
           .map((categoryPoint) => categoryPoint.name);
-        const categoryName = category.name;
         if (unfilledPoints.length) {
-          acc.push({ categoryName, unfilledPoints });
+          arr.push({ name, unfilledPoints });
         }
-        return acc;
+        return arr;
       }, []);
     },
   },
