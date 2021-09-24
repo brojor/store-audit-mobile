@@ -65,6 +65,17 @@ export default new Vuex.Store({
     SET_ACTIVE_CATEGORY(state, categoryId) {
       state.activeCategory = categoryId;
     },
+    RESET_RESULTS(state) {
+      console.log('resetuji..');
+      state.categories = state.categories.map((category) => {
+        const categoryPoints = category.categoryPoints.map((categoryPoint) => ({
+          ...categoryPoint,
+          accepted: null,
+          comment: null,
+        }));
+        return { ...category, categoryPoints };
+      });
+    },
   },
   actions: {
     // login({ commit, dispatch }, credentials) {

@@ -74,6 +74,7 @@ export default {
             if (data.success) {
               const message = 'Výsledky auditu byly úspěšně uloženy do databáze';
               this.$store.commit('OPEN_MODAL', { title: 'Dokončeno', component: Warning, message });
+              this.$store.commit('RESET_RESULTS');
             } else {
               const { message } = data;
               this.$store.commit('OPEN_MODAL', { title: 'Chyba', component: Warning, message });
