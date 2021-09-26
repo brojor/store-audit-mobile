@@ -1,11 +1,6 @@
 <template>
   <main>
-    <div class="title-bar">
-      <img class="logo-small" src="@/assets/logo-small.png" alt="logo small" />
-      <h1>Store audit</h1>
-      <Logout @click.native="$store.dispatch('logout')" />
-    </div>
-
+    <MainHeader></MainHeader>
     <select name="selectedStore" id="selectedStore" v-model="selectedStore">
       <option v-for="(store, index) in stores" :key="index" :value="store.id">{{
         store.name
@@ -24,7 +19,7 @@ import LoginComponent from '@/components/Login.vue';
 import CategoryWrapper from '@/components/CategoryWrapper.vue';
 import DataService from '@/services/DataService';
 import Warning from '@/components/modal/Warning.vue';
-import Logout from '@/components/icons/Logout.vue';
+import MainHeader from './MainHeader.vue';
 
 export default {
   name: 'StoreAudit',
@@ -32,7 +27,7 @@ export default {
     RootModal,
     LoginComponent,
     CategoryWrapper,
-    Logout,
+    MainHeader,
   },
 
   data() {
@@ -88,16 +83,6 @@ export default {
 </script>
 
 <style lang="css" scoped>
-.title-bar {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 1.5rem;
-}
-img.logo-small {
-  max-width: 100%;
-  height: 3rem;
-}
 select {
   outline: none;
   width: 100%;
@@ -116,13 +101,7 @@ main {
   overflow-x: hidden;
   padding: 0.5rem;
 }
-h1 {
-  font-size: 2.2rem;
-  /* margin: 1rem; */
-  margin-left: 1rem;
-  text-transform: uppercase;
-  color: white;
-}
+
 ‹ .active {
   background-color: #201d1e;
 }
