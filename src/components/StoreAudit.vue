@@ -1,11 +1,7 @@
 <template>
   <main>
-    <MainHeader></MainHeader>
-    <select name="selectedStore" id="selectedStore" v-model="selectedStore">
-      <option v-for="(store, index) in stores" :key="index" :value="store.id">{{
-        store.name
-      }}</option>
-    </select>
+    <MainHeader />
+    <StoreSelector />
     <CategoryWrapper v-for="category in categories" :key="category.id" :category="category" />
     <button class="btn btn-w100" @click="sendResults">Odeslat</button>
     <RootModal></RootModal>
@@ -20,6 +16,7 @@ import CategoryWrapper from '@/components/CategoryWrapper.vue';
 import DataService from '@/services/DataService';
 import Warning from '@/components/modal/Warning.vue';
 import MainHeader from './MainHeader.vue';
+import StoreSelector from './StoreSelector.vue';
 
 export default {
   name: 'StoreAudit',
@@ -28,6 +25,7 @@ export default {
     LoginComponent,
     CategoryWrapper,
     MainHeader,
+    StoreSelector,
   },
 
   data() {
@@ -41,17 +39,8 @@ export default {
     userIsLogged() {
       return this.$store.getters.userIsLogged;
     },
-    stores() {
-      return this.$store.state.auth.stores;
-    },
     categories() {
       return this.$store.state.categories;
-    },
-    selectedStore() {
-      if (this.$store.state.auth.stores.length) {
-        return this.$store.state.auth.stores[0].id;
-      }
-      return null;
     },
   },
   methods: {
@@ -83,17 +72,6 @@ export default {
 </script>
 
 <style lang="css" scoped>
-select {
-  outline: none;
-  width: 100%;
-  height: 4rem;
-  /* border: 2px solid black; */
-  border: none;
-  border-radius: 4px;
-  text-align-last: center;
-  margin-bottom: 1rem;
-}
-
 main {
   position: relative;
   width: 100vw;
