@@ -2,7 +2,7 @@
   <header class="main-header">
     <img class="logo-small" src="@/assets/logo-small.png" alt="Hannah logo" />
     <h1 class="header-title">Store audit</h1>
-    <Logout @click.native="$store.dispatch('logout')"></Logout>
+    <Logout @click.native="logout"></Logout>
   </header>
 </template>
 
@@ -12,6 +12,11 @@ import Logout from './icons/Logout.vue';
 export default {
   components: {
     Logout,
+  },
+  methods: {
+    logout() {
+      this.$store.dispatch('logout').then(() => this.$router.push('Login'));
+    },
   },
 };
 </script>

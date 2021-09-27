@@ -1,5 +1,4 @@
 /* eslint no-shadow: ["error", { "allow": ["state"] }] */
-
 import AuthService from '@/services/AuthService';
 import Api from '@/services/Api';
 
@@ -8,7 +7,7 @@ const state = {
   stores: JSON.parse(localStorage.getItem('stores')) || [],
 };
 const getters = {
-  userIsLogged: (state) => {
+  isAuthenticated: (state) => {
     if (state.token) {
       return true;
     }
@@ -30,7 +29,6 @@ const actions = {
   login({ commit, dispatch }, credentials) {
     return AuthService.login(credentials)
       .then(({ data }) => {
-        console.log('actions-token', data.token);
         commit('SET_TOKEN', data.token);
         dispatch('getStores');
       })

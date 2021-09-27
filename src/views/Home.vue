@@ -5,24 +5,21 @@
     <CategoryWrapper v-for="category in categories" :key="category.id" :category="category" />
     <button class="btn btn-w100" @click="sendResults">Odeslat</button>
     <RootModal></RootModal>
-    <LoginComponent v-if="!userIsLogged" />
   </main>
 </template>
 
 <script>
 import RootModal from '@/components/modal/RootModal.vue';
-import LoginComponent from '@/components/Login.vue';
 import CategoryWrapper from '@/components/CategoryWrapper.vue';
 import DataService from '@/services/DataService';
 import Warning from '@/components/modal/Warning.vue';
-import MainHeader from './MainHeader.vue';
-import StoreSelector from './StoreSelector.vue';
+import MainHeader from '../components/MainHeader.vue';
+import StoreSelector from '../components/StoreSelector.vue';
 
 export default {
   name: 'StoreAudit',
   components: {
     RootModal,
-    LoginComponent,
     CategoryWrapper,
     MainHeader,
     StoreSelector,
