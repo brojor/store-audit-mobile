@@ -8,11 +8,17 @@
 <script>
 export default {
   computed: {
-    selectedStore() {
-      return this.$store.state.auth.stores[0].id || null;
+    selectedStore: {
+      get() {
+        return this.$store.state.selectedStoreId;
+      },
+      set(id) {
+        console.log('nastavuji: ', id);
+        this.$store.commit('SET_SELECTED_STORE', id);
+      },
     },
     listOfStores() {
-      return this.$store.state.auth.stores;
+      return this.$store.state.stores;
     },
   },
 };

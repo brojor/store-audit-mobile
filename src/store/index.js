@@ -6,6 +6,7 @@ import categories from '@/skeleton.json';
 import UnfilledPoints from '@/components/modal/UnfilledPoints.vue';
 import WriteComment from '@/components/modal/WriteComment.vue';
 
+import Api from '@/services/Api';
 import auth from './modules/auth';
 
 Vue.use(Vuex);
@@ -19,6 +20,8 @@ export default new Vuex.Store({
     commentedPoint: { categoryId: null, categoryPointId: null },
     // unfilledPoints: [],
     activeCategory: null,
+    stores: [],
+    selectedStoreId: '',
   },
   mutations: {
     // SET_TOKEN(state, token) {
@@ -76,6 +79,14 @@ export default new Vuex.Store({
         return { ...category, categoryPoints };
       });
     },
+    SET_STORES(state, stores) {
+      state.stores = stores;
+
+      // localStorage.setItem('stores', JSON.stringify(stores));
+    },
+    SET_SELECTED_STORE(state, id) {
+      state.selectedStoreId = id;
+    },
   },
   actions: {
     // login({ commit, dispatch }, credentials) {
@@ -106,6 +117,15 @@ export default new Vuex.Store({
       commit('OPEN_MODAL', { title: 'Chybí vyplnit následující body', component: UnfilledPoints });
       commit('SET_UNFILLED_POINTS', unfilledPoints);
     },
+    getStores({ commit }) {
+      return Api.get('/stores')
+        .then(({ data }) => {
+          commit('SET_STORES', data.stores);
+          const { id } = data.stores[0];
+          commit('SET_SELECTED_STORE', id);
+        })
+        .catch((err) => console.log(err));
+    },
   },
 
   getters: {
@@ -130,7 +150,7 @@ export default new Vuex.Store({
           return {
             comment,
             accepted,
-            categoryPoint,
+            categoryPoint: `C${category.id}P${categoryPoint}`,
             category: category.id,
           };
         })).flat();

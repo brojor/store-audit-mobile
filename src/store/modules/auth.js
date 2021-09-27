@@ -20,10 +20,6 @@ const mutations = {
     localStorage.setItem('token', token);
     Api.defaults.headers.common.Authorization = `Bearer ${token}`;
   },
-  SET_STORES(state, stores) {
-    state.stores = stores;
-    localStorage.setItem('stores', JSON.stringify(stores));
-  },
 };
 const actions = {
   login({ commit, dispatch }, credentials) {
@@ -36,14 +32,8 @@ const actions = {
         console.log(err.response.data);
       });
   },
-  getStores({ commit }) {
-    return Api.get('/stores')
-      .then(({ data }) => {
-        commit('SET_STORES', data.stores);
-      })
-      .catch((err) => console.log(err));
-  },
   logout({ commit }) {
+    console.log('odhlašuji');
     commit('SET_TOKEN', '');
   },
 };
