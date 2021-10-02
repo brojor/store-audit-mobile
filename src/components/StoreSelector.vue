@@ -14,7 +14,8 @@ export default {
       },
       set(id) {
         console.log('nastavuji: ', id);
-        this.$store.commit('SET_SELECTED_STORE', id);
+        this.$store.dispatch('changeStoreId', id);
+        // this.$store.commit('SET_SELECTED_STORE', id);
       },
     },
     listOfStores() {

@@ -43,7 +43,8 @@ export default {
       return this.$store.getters.userIsLogged;
     },
     categories() {
-      return this.$store.state.categories;
+      // return this.$store.state.categories;
+      return this.$store.getters.results2d;
     },
   },
   methods: {

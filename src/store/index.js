@@ -7,38 +7,39 @@ import UnfilledPoints from '@/components/modal/UnfilledPoints.vue';
 import WriteComment from '@/components/modal/WriteComment.vue';
 
 import Api from '@/services/Api';
+import { addZeroIfLowerTen } from '../utils';
 import auth from './modules/auth';
+import emptyResults from '../empty.json';
+import seed from '../seed.json';
 
 Vue.use(Vuex);
 
 export default new Vuex.Store({
   state: {
-    // token: localStorage.getItem('token') || null,
-    // stores: JSON.parse(localStorage.getItem('stores')) || [],
     categories,
+    results: emptyResults,
     modal: { isOpen: false, title: '', message: '' },
     commentedPoint: { categoryId: null, categoryPointId: null },
-    // unfilledPoints: [],
     activeCategory: null,
     stores: [],
     selectedStoreId: '',
   },
   mutations: {
-    // SET_TOKEN(state, token) {
-    //   state.token = token;
-    //   localStorage.setItem('token', token);
-    //   Api.defaults.headers.common.Authorization = `Bearer ${token}`;
-    // },
-    // SET_STORES(state, stores) {
-    //   state.stores = stores;
-    //   localStorage.setItem('stores', JSON.stringify(stores));
-    // },
     WRITE_STATUS(state, { accepted, categoryId, categoryPointId }) {
       const { categoryPoints } = state.categories.find((category) => category.id === categoryId);
       const currentcategoryPoint = categoryPoints.find(
         (categoryPoint) => categoryPoint.id === categoryPointId,
       );
       currentcategoryPoint.accepted = accepted;
+      const categoryNum = addZeroIfLowerTen(categoryId);
+      const categoryPointNum = addZeroIfLowerTen(categoryPointId);
+      const obj = JSON.parse(localStorage.getItem(state.selectedStoreId)) || {};
+      obj[`C${categoryNum}P${categoryPointNum}`] = { accepted };
+      localStorage.setItem(state.selectedStoreId, JSON.stringify(obj));
+
+      // console.log({
+      //   [state.selectedStoreId]: { [`C${categoryNum}P${categoryPointNum}`]: accepted },
+      // });
     },
     WRITE_COMMENT(state, comment) {
       const { categoryId, categoryPointId } = state.commentedPoint;
@@ -81,32 +82,22 @@ export default new Vuex.Store({
     },
     SET_STORES(state, stores) {
       state.stores = stores;
-
-      // localStorage.setItem('stores', JSON.stringify(stores));
     },
     SET_SELECTED_STORE(state, id) {
       state.selectedStoreId = id;
     },
+    SET_RESULTS(state, resultsToSet) {
+      state.results = resultsToSet;
+    },
   },
   actions: {
-    // login({ commit, dispatch }, credentials) {
-    //   return AuthService.login(credentials)
-    //     .then(({ data }) => {
-    //       console.log('actions-token', data.token);
-    //       commit('SET_TOKEN', data.token);
-    //       dispatch('getStores');
-    //     })
-    //     .catch((err) => {
-    //       console.log(err.response.data);
-    //     });
-    // },
-    // getStores({ commit }) {
-    //   return Api.get('/stores')
-    //     .then(({ data }) => {
-    //       commit('SET_STORES', data.stores);
-    //     })
-    //     .catch((err) => console.log(err));
-    // },
+    changeStoreId({ commit }, id) {
+      const auditInProgress = JSON.parse(localStorage.getItem(id)) || {};
+      const results = { ...emptyResults, ...auditInProgress };
+      commit('SET_RESULTS', results);
+
+      // console.log({ audit });
+    },
     addComment({ commit }, { categoryId, categoryPointId }) {
       commit('OPEN_MODAL', { title: 'Přidání poznámky', component: WriteComment });
       commit('SET_COMMENTED_POINT_IDS', { categoryId, categoryPointId });
@@ -129,12 +120,32 @@ export default new Vuex.Store({
   },
 
   getters: {
-    // userIsLogged: (state) => {
-    //   if (state.token) {
-    //     return true;
-    //   }
-    //   return false;
-    // },
+    results2d(state) {
+      return Object.entries(state.results).reduce((res, [id, val]) => {
+        const categoryId = Number(id.slice(1, 3));
+        const categoryPointId = Number(id.slice(4));
+        const categoryName = seed.names.categories[categoryId];
+        const categoryPointName = seed.names.categoryPoints[id];
+        const categoryPointWeight = seed.weights[id];
+        const value = {
+          ...val,
+          id: categoryPointId,
+          name: categoryPointName,
+          weight: categoryPointWeight,
+        };
+        if (!res[categoryId - 1]) {
+          // eslint-disable-next-line no-param-reassign
+          res[categoryId - 1] = {
+            id: categoryId,
+            categoryPoints: [value],
+            name: categoryName,
+          };
+        } else {
+          res[categoryId - 1].categoryPoints.push(value);
+        }
+        return res;
+      }, []);
+    },
     categoryPointIsAccepted: (state) => (categoryId, categoryPointId) => {
       const { categoryPoints } = state.categories.find((category) => category.id === categoryId);
       const { accepted } = categoryPoints.find(
@@ -142,18 +153,26 @@ export default new Vuex.Store({
       );
       return accepted;
     },
-    // prettier-ignore
     results(state) {
       return state.categories
-        .map((category) => category.categoryPoints.map((catPoint) => {
-          const { comment, accepted, id: categoryPoint } = catPoint;
-          return {
-            comment,
-            accepted,
-            categoryPoint: `C${category.id}P${categoryPoint}`,
-            category: category.id,
-          };
-        })).flat();
+        .map(
+          (category) =>
+            // eslint-disable-next-line implicit-arrow-linebreak
+            category.categoryPoints.map((catPoint) => {
+              const { comment, accepted, id } = catPoint;
+              const categoryNum = addZeroIfLowerTen(category.id);
+              const categoryPointNum = addZeroIfLowerTen(id);
+              const categoryPoint = `C${categoryNum}P${categoryPointNum}`;
+              return {
+                comment,
+                accepted,
+                categoryPoint,
+                category: category.id,
+              };
+            }),
+          // eslint-disable-next-line function-paren-newline
+        )
+        .flat();
     },
     listOfUnfilledItems(state) {
       return state.categories.reduce((arr, category) => {
