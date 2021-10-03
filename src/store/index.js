@@ -49,14 +49,6 @@ export default new Vuex.Store({
       localStorageEntry[categoryPointId] = { accepted, comment };
       localStorage.setItem(state.selectedStoreId, JSON.stringify(localStorageEntry));
     },
-    // WRITE_COMMENT(state, comment) {
-    //   const { categoryId, categoryPointId } = state.commentedPoint;
-    //   const { categoryPoints } = state.categories.find((category) => category.id === categoryId);
-    //   const currentcategoryPoint = categoryPoints.find(
-    //     (categoryPoint) => categoryPoint.id === categoryPointId,
-    //   );
-    //   currentcategoryPoint.comment = comment;
-    // },
     OPEN_MODAL(state, { title, component, message = '' }) {
       state.modal.isOpen = true;
 
@@ -67,9 +59,6 @@ export default new Vuex.Store({
     CLOSE_MODAL(state) {
       state.modal.isOpen = false;
     },
-    // SET_COMMENTED_POINT_IDS(state, { categoryId, categoryPointId }) {
-    //   state.commentedPoint = { categoryId, categoryPointId };
-    // },
     SET_UNFILLED_POINTS(state, unfilledPoints) {
       console.log('hello from mutation', { unfilledPoints });
       state.unfilledPoints = unfilledPoints;
@@ -78,15 +67,7 @@ export default new Vuex.Store({
       state.activeCategory = categoryId;
     },
     RESET_RESULTS(state) {
-      console.log('resetuji..');
-      state.categories = state.categories.map((category) => {
-        const categoryPoints = category.categoryPoints.map((categoryPoint) => ({
-          ...categoryPoint,
-          accepted: null,
-          comment: null,
-        }));
-        return { ...category, categoryPoints };
-      });
+      state.results = { ...emptyResults };
     },
     SET_STORES(state, stores) {
       state.stores = stores;
@@ -191,8 +172,8 @@ export default new Vuex.Store({
         )
         .flat();
     },
-    listOfUnfilledItems(state) {
-      return state.categories.reduce((arr, category) => {
+    listOfUnfilledItems(state, getters) {
+      return getters.results2d.reduce((arr, category) => {
         const { name } = category;
         const unfilledPoints = category.categoryPoints
           .filter((categoryPoint) => categoryPoint.accepted === null)
