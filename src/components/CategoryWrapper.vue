@@ -7,9 +7,7 @@
     >
       {{ category.name }}
       <span class="rt-idx">
-        {{
-          `${((calcCurrentScore(category.id) / calcAvailableScore(category.id)) * 100).toFixed()}%`
-        }}
+      {{ `${$store.getters.achievedScoreInCategory(category.id).toFixed()}%` }}
       </span>
     </div>
     <transition name="roll">
@@ -49,36 +47,6 @@ export default {
     },
   },
   methods: {
-    // předělat na vuex Getter
-    calcAvailableScore(categoryId) {
-      const [currentCategory] = this.categories.filter((category) => category.id === categoryId);
-      return currentCategory.categoryPoints.reduce(
-        (acc, categoryPoint) => acc + categoryPoint.weight,
-        0,
-      );
-    },
-    // předělat na vuex Getter
-    calcCurrentScore(categoryId) {
-      const resultItems = this.results.filter((point) => point.category === categoryId);
-      return resultItems.reduce((acc, point) => {
-        if (point.accepted) {
-          const currentCategory = this.categories.find(
-            (category) => category.id === point.category,
-          );
-          const { weight } = currentCategory.categoryPoints.find(
-            (categoryPoint) => categoryPoint.id === point.categoryPoint,
-          );
-          return acc + weight;
-        }
-        return acc;
-      }, 0);
-    },
-    calcSuccessRate(categoryId) {
-      return {
-        available: this.calcAvailableScore(categoryId),
-        current: this.calcCurrentScore(categoryId),
-      };
-    },
     dropDown(categoryId) {
       this.activeKategory = this.activeKategory === categoryId ? null : categoryId;
     },

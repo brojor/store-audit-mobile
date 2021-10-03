@@ -12,6 +12,24 @@ import auth from './modules/auth';
 import emptyResults from '../empty.json';
 import seed from '../seed.json';
 
+function calcAvailableScore(weights, categoryId) {
+  return Object.entries(weights).reduce((sum, [id, weight]) => {
+    if (Number(id.slice(1, 3)) === categoryId) {
+      return sum + weight;
+    }
+    return sum;
+  }, 0);
+}
+function calcAchievedScore(results, categoryId) {
+  const { categoryPoints } = results.find((category) => category.id === categoryId);
+  return categoryPoints.reduce((score, categoryPoint) => {
+    if (categoryPoint.accepted) {
+      return score + categoryPoint.weight;
+    }
+    return score;
+  }, 0);
+}
+
 Vue.use(Vuex);
 
 export default new Vuex.Store({
@@ -27,29 +45,18 @@ export default new Vuex.Store({
   mutations: {
     WRITE_STATUS(state, { accepted, categoryPointId, comment }) {
       state.results[categoryPointId] = { accepted, comment };
-      // const { categoryPoints } = state.categories.find((category) => category.id === categoryId);
-      // const currentcategoryPoint = categoryPoints.find(
-      //   (categoryPoint) => categoryPoint.id === categoryPointId,
-      // );
-      // currentcategoryPoint.accepted = accepted;
-      // const categoryNum = addZeroIfLowerTen(categoryId);
-      // const categoryPointNum = addZeroIfLowerTen(categoryPointId);
       const localStorageEntry = JSON.parse(localStorage.getItem(state.selectedStoreId)) || {};
       localStorageEntry[categoryPointId] = { accepted, comment };
       localStorage.setItem(state.selectedStoreId, JSON.stringify(localStorageEntry));
-
-      // console.log({
-      //   [state.selectedStoreId]: { [`C${categoryNum}P${categoryPointNum}`]: accepted },
-      // });
     },
-    WRITE_COMMENT(state, comment) {
-      const { categoryId, categoryPointId } = state.commentedPoint;
-      const { categoryPoints } = state.categories.find((category) => category.id === categoryId);
-      const currentcategoryPoint = categoryPoints.find(
-        (categoryPoint) => categoryPoint.id === categoryPointId,
-      );
-      currentcategoryPoint.comment = comment;
-    },
+    // WRITE_COMMENT(state, comment) {
+    //   const { categoryId, categoryPointId } = state.commentedPoint;
+    //   const { categoryPoints } = state.categories.find((category) => category.id === categoryId);
+    //   const currentcategoryPoint = categoryPoints.find(
+    //     (categoryPoint) => categoryPoint.id === categoryPointId,
+    //   );
+    //   currentcategoryPoint.comment = comment;
+    // },
     OPEN_MODAL(state, { title, component, message = '' }) {
       state.modal.isOpen = true;
 
@@ -60,9 +67,9 @@ export default new Vuex.Store({
     CLOSE_MODAL(state) {
       state.modal.isOpen = false;
     },
-    SET_COMMENTED_POINT_IDS(state, { categoryId, categoryPointId }) {
-      state.commentedPoint = { categoryId, categoryPointId };
-    },
+    // SET_COMMENTED_POINT_IDS(state, { categoryId, categoryPointId }) {
+    //   state.commentedPoint = { categoryId, categoryPointId };
+    // },
     SET_UNFILLED_POINTS(state, unfilledPoints) {
       console.log('hello from mutation', { unfilledPoints });
       state.unfilledPoints = unfilledPoints;
@@ -100,8 +107,6 @@ export default new Vuex.Store({
       const results = { ...emptyResults, ...auditInProgress };
       commit('SET_RESULTS', results);
       commit('SET_SELECTED_STORE', id);
-
-      // console.log({ audit });
     },
     addComment({ commit }) {
       return new Promise((resolve) => {
@@ -109,7 +114,6 @@ export default new Vuex.Store({
           title: 'Přidání poznámky',
           component: WriteComment,
         });
-        // commit('SET_COMMENTED_POINT_IDS', categoryPointId);
         commit('SET_PROMISE', resolve);
       });
     },
@@ -198,6 +202,13 @@ export default new Vuex.Store({
         }
         return arr;
       }, []);
+    },
+    achievedScoreInCategory(state, getters) {
+      return (categoryId) => {
+        const availableScore = calcAvailableScore(seed.weights, categoryId);
+        const achievedScore = calcAchievedScore(getters.results2d, categoryId);
+        return (achievedScore / availableScore) * 100;
+      };
     },
   },
   modules: { auth },
