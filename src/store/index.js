@@ -17,7 +17,7 @@ Vue.use(Vuex);
 export default new Vuex.Store({
   state: {
     categories,
-    results: emptyResults,
+    results: {},
     modal: { isOpen: false, title: '', message: '' },
     commentedPoint: { categoryId: null, categoryPointId: null },
     activeCategory: null,
@@ -25,17 +25,18 @@ export default new Vuex.Store({
     selectedStoreId: '',
   },
   mutations: {
-    WRITE_STATUS(state, { accepted, categoryId, categoryPointId }) {
-      const { categoryPoints } = state.categories.find((category) => category.id === categoryId);
-      const currentcategoryPoint = categoryPoints.find(
-        (categoryPoint) => categoryPoint.id === categoryPointId,
-      );
-      currentcategoryPoint.accepted = accepted;
-      const categoryNum = addZeroIfLowerTen(categoryId);
-      const categoryPointNum = addZeroIfLowerTen(categoryPointId);
-      const obj = JSON.parse(localStorage.getItem(state.selectedStoreId)) || {};
-      obj[`C${categoryNum}P${categoryPointNum}`] = { accepted };
-      localStorage.setItem(state.selectedStoreId, JSON.stringify(obj));
+    WRITE_STATUS(state, { accepted, categoryPointId, comment }) {
+      state.results[categoryPointId] = { accepted, comment };
+      // const { categoryPoints } = state.categories.find((category) => category.id === categoryId);
+      // const currentcategoryPoint = categoryPoints.find(
+      //   (categoryPoint) => categoryPoint.id === categoryPointId,
+      // );
+      // currentcategoryPoint.accepted = accepted;
+      // const categoryNum = addZeroIfLowerTen(categoryId);
+      // const categoryPointNum = addZeroIfLowerTen(categoryPointId);
+      const localStorageEntry = JSON.parse(localStorage.getItem(state.selectedStoreId)) || {};
+      localStorageEntry[categoryPointId] = { accepted, comment };
+      localStorage.setItem(state.selectedStoreId, JSON.stringify(localStorageEntry));
 
       // console.log({
       //   [state.selectedStoreId]: { [`C${categoryNum}P${categoryPointNum}`]: accepted },
@@ -89,18 +90,28 @@ export default new Vuex.Store({
     SET_RESULTS(state, resultsToSet) {
       state.results = resultsToSet;
     },
+    SET_PROMISE(state, promise) {
+      state.promise = promise;
+    },
   },
   actions: {
     changeStoreId({ commit }, id) {
       const auditInProgress = JSON.parse(localStorage.getItem(id)) || {};
       const results = { ...emptyResults, ...auditInProgress };
       commit('SET_RESULTS', results);
+      commit('SET_SELECTED_STORE', id);
 
       // console.log({ audit });
     },
-    addComment({ commit }, { categoryId, categoryPointId }) {
-      commit('OPEN_MODAL', { title: 'Přidání poznámky', component: WriteComment });
-      commit('SET_COMMENTED_POINT_IDS', { categoryId, categoryPointId });
+    addComment({ commit }) {
+      return new Promise((resolve) => {
+        commit('OPEN_MODAL', {
+          title: 'Přidání poznámky',
+          component: WriteComment,
+        });
+        // commit('SET_COMMENTED_POINT_IDS', categoryPointId);
+        commit('SET_PROMISE', resolve);
+      });
     },
     showUnfilledPointsWarning({ commit }, unfilledPoints) {
       console.log('hello from actions', { unfilledPoints });
@@ -114,6 +125,7 @@ export default new Vuex.Store({
           commit('SET_STORES', data.stores);
           const { id } = data.stores[0];
           commit('SET_SELECTED_STORE', id);
+          this.dispatch('changeStoreId', id);
         })
         .catch((err) => console.log(err));
     },
@@ -132,6 +144,7 @@ export default new Vuex.Store({
           id: categoryPointId,
           name: categoryPointName,
           weight: categoryPointWeight,
+          newId: id,
         };
         if (!res[categoryId - 1]) {
           // eslint-disable-next-line no-param-reassign

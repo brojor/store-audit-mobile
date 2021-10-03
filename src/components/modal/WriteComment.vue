@@ -14,10 +14,8 @@ export default {
   },
   methods: {
     handleSubmit() {
-      // EventBus.$emit('commentAdded', this.message);
-      this.$store.commit('WRITE_COMMENT', this.message);
+      this.$store.state.promise(this.message);
       this.message = '';
-      // this.$emit('close');
       this.$store.commit('CLOSE_MODAL');
     },
   },

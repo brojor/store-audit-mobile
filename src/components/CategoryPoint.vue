@@ -26,6 +26,7 @@ export default {
       posX: {},
       touchTarget: null,
       moveLength: 0,
+      lastState: null,
     };
   },
   methods: {
@@ -33,13 +34,22 @@ export default {
       this.posX.start = event.touches[0].clientX;
       this.$refs.touchTarget.classList.remove('transformSlow');
     },
-    touchmove(event, category, categoryPoint) {
+    touchmove(event, _, categoryPoint) {
       this.storeMoveLength(event);
       if (Math.abs(this.moveLength) > 25) {
         this.$refs.touchTarget.style.transform = `translate3d(${this.moveLength}px, 0px, 0px)`;
       }
       if (this.thresholdExceeded()) {
-        this.writeStatus(category.id, categoryPoint.id);
+        const swipeDirection = this.moveLength > 0 ? 'right' : 'left';
+        const accepted = swipeDirection === 'right';
+        if (
+          // eslint-disable-next-line operator-linebreak
+          (swipeDirection === 'right' && this.lastState !== true) ||
+          (swipeDirection === 'left' && this.lastState !== false)
+        ) {
+          this.writeStatus(categoryPoint.newId, accepted);
+          this.lastState = accepted;
+        }
       }
     },
     touchend() {
@@ -54,22 +64,17 @@ export default {
       const threshold = window.innerWidth / 4;
       return Math.abs(this.moveLength) > threshold;
     },
-    writeStatus(categoryId, categoryPointId) {
-      const swipeDirection = this.moveLength > 0 ? 'right' : 'left';
-      const accepted = this.$store.getters.categoryPointIsAccepted(categoryId, categoryPointId);
-
-      if (swipeDirection === 'right' && !accepted) {
-        console.log('comituju accepted = TRUE');
-        this.$store.commit('WRITE_STATUS', { accepted: true, categoryId, categoryPointId });
+    async writeStatus(categoryPointId, accepted) {
+      console.log('writeStatuuus', accepted);
+      let comment;
+      if (!accepted) {
+        comment = await this.$store.dispatch('addComment');
       }
-      if (swipeDirection === 'left' && accepted !== false) {
-        // spustVyskakovacíOkno().then(() => {
-        //   commit('WRITE_STATUS', { accepted: false, categoryId, categoryPointId });
-        // });
-        console.log('comituju accepted = FALSE');
-        this.$store.dispatch('addComment', { categoryId, categoryPointId });
-        this.$store.commit('WRITE_STATUS', { accepted: false, categoryId, categoryPointId });
-      }
+      this.$store.commit('WRITE_STATUS', {
+        accepted,
+        categoryPointId,
+        comment,
+      });
     },
   },
 };
@@ -102,6 +107,5 @@ export default {
   color: #dd614a;
   color: red;
   font-weight: 600;
-
 }
 </style>
