@@ -7,7 +7,6 @@ import UnfilledPoints from '@/components/modal/UnfilledPoints.vue';
 import WriteComment from '@/components/modal/WriteComment.vue';
 
 import Api from '@/services/Api';
-import { addZeroIfLowerTen } from '../utils';
 import auth from './modules/auth';
 import emptyResults from '../empty.json';
 import seed from '../seed.json';
@@ -51,7 +50,6 @@ export default new Vuex.Store({
     },
     OPEN_MODAL(state, { title, component, message = '' }) {
       state.modal.isOpen = true;
-
       state.modal.title = title;
       state.modal.message = message;
       state.modal.component = component;
@@ -60,7 +58,6 @@ export default new Vuex.Store({
       state.modal.isOpen = false;
     },
     SET_UNFILLED_POINTS(state, unfilledPoints) {
-      console.log('hello from mutation', { unfilledPoints });
       state.unfilledPoints = unfilledPoints;
     },
     SET_ACTIVE_CATEGORY(state, categoryId) {
@@ -99,8 +96,6 @@ export default new Vuex.Store({
       });
     },
     showUnfilledPointsWarning({ commit }, unfilledPoints) {
-      console.log('hello from actions', { unfilledPoints });
-
       commit('OPEN_MODAL', { title: 'Chybí vyplnit následující body', component: UnfilledPoints });
       commit('SET_UNFILLED_POINTS', unfilledPoints);
     },
@@ -115,7 +110,6 @@ export default new Vuex.Store({
         .catch((err) => console.log(err));
     },
   },
-
   getters: {
     results2d(state) {
       return Object.entries(state.results).reduce((res, [id, val]) => {
@@ -143,34 +137,6 @@ export default new Vuex.Store({
         }
         return res;
       }, []);
-    },
-    categoryPointIsAccepted: (state) => (categoryId, categoryPointId) => {
-      const { categoryPoints } = state.categories.find((category) => category.id === categoryId);
-      const { accepted } = categoryPoints.find(
-        (categoryPoint) => categoryPoint.id === categoryPointId,
-      );
-      return accepted;
-    },
-    results(state) {
-      return state.categories
-        .map(
-          (category) =>
-            // eslint-disable-next-line implicit-arrow-linebreak
-            category.categoryPoints.map((catPoint) => {
-              const { comment, accepted, id } = catPoint;
-              const categoryNum = addZeroIfLowerTen(category.id);
-              const categoryPointNum = addZeroIfLowerTen(id);
-              const categoryPoint = `C${categoryNum}P${categoryPointNum}`;
-              return {
-                comment,
-                accepted,
-                categoryPoint,
-                category: category.id,
-              };
-            }),
-          // eslint-disable-next-line function-paren-newline
-        )
-        .flat();
     },
     listOfUnfilledItems(state, getters) {
       return getters.results2d.reduce((arr, category) => {
