@@ -11,9 +11,9 @@
 <script>
 import RootModal from '@/components/modal/RootModal.vue';
 import CategoryWrapper from '@/components/CategoryWrapper.vue';
-import DataService from '@/services/DataService';
 import Warning from '@/components/modal/Warning.vue';
 import Api from '@/services/Api';
+import DataService from '../services/DataService';
 import MainHeader from '../components/MainHeader.vue';
 import StoreSelector from '../components/StoreSelector.vue';
 
@@ -43,7 +43,6 @@ export default {
       return this.$store.getters.userIsLogged;
     },
     categories() {
-      // return this.$store.state.categories;
       return this.$store.getters.results2d;
     },
   },
@@ -55,7 +54,7 @@ export default {
       } else {
         const payload = {
           storeId: this.$store.state.selectedStoreId,
-          results: this.$store.getters.results,
+          results: this.$store.state.results,
         };
         DataService.sendResults(payload)
           .then(({ data }) => {
@@ -89,8 +88,6 @@ main {
 }
 .btn-w100 {
   width: 100%;
-  /* border: 2px solid black; */
-
   margin: 4px 0;
   margin-top: 0.5rem;
   height: 55px;
