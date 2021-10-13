@@ -1,6 +1,5 @@
 <template>
   <main>
-    <MainHeader />
     <StoreSelector />
     <CategoryWrapper v-for="category in categories" :key="category.id" :category="category" />
     <button class="btn btn-w100" @click="sendResults">Odeslat</button>
@@ -14,7 +13,6 @@ import CategoryWrapper from '@/components/CategoryWrapper.vue';
 import Warning from '@/components/modal/Warning.vue';
 import Api from '@/services/Api';
 import DataService from '../services/DataService';
-import MainHeader from '../components/MainHeader.vue';
 import StoreSelector from '../components/StoreSelector.vue';
 
 export default {
@@ -22,7 +20,6 @@ export default {
   components: {
     RootModal,
     CategoryWrapper,
-    MainHeader,
     StoreSelector,
   },
 
@@ -38,6 +35,7 @@ export default {
     Api.defaults.headers.common.Authorization = `Bearer ${token}`;
     this.$store.dispatch('getStores');
   },
+
   computed: {
     userIsLogged() {
       return this.$store.getters.userIsLogged;

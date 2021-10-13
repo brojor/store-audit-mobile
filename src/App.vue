@@ -1,8 +1,23 @@
 <template>
   <div id="app">
+    <MainHeader />
+
     <router-view />
+    <RootModal></RootModal>
   </div>
 </template>
+
+<script>
+import RootModal from './components/modal/RootModal.vue';
+import MainHeader from './components/MainHeader.vue';
+
+export default {
+  components: {
+    MainHeader,
+    RootModal,
+  },
+};
+</script>
 
 <style>
 *,

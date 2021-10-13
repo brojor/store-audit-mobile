@@ -18,6 +18,7 @@
 
 <script>
 export default {
+  /* eslint-disable operator-linebreak */
   name: 'CategoryPoint',
   props: ['category', 'categoryPoint'],
 
@@ -26,8 +27,13 @@ export default {
       posX: {},
       touchTarget: null,
       moveLength: 0,
-      lastState: null,
+      lastState: { accepted: null, storeId: null },
     };
+  },
+  computed: {
+    selectedStoreId() {
+      return this.$store.state.selectedStoreId;
+    },
   },
   methods: {
     touchstart(index, event) {
@@ -42,13 +48,15 @@ export default {
       if (this.thresholdExceeded()) {
         const swipeDirection = this.moveLength > 0 ? 'right' : 'left';
         const accepted = swipeDirection === 'right';
+
         if (
-          // eslint-disable-next-line operator-linebreak
-          (swipeDirection === 'right' && this.lastState !== true) ||
-          (swipeDirection === 'left' && this.lastState !== false)
+          (swipeDirection === 'right' && this.lastState.accepted !== true) ||
+          (swipeDirection === 'left' && this.lastState.accepted !== false) ||
+          this.lastState.storeId !== this.selectedStoreId
         ) {
+          this.lastState.accepted = accepted;
+          this.lastState.storeId = this.selectedStoreId;
           this.writeStatus(categoryPoint.newId, accepted);
-          this.lastState = accepted;
         }
       }
     },
