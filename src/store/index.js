@@ -65,6 +65,7 @@ export default new Vuex.Store({
     },
     RESET_RESULTS(state) {
       state.results = { ...emptyResults };
+      localStorage.setItem(state.selectedStoreId, JSON.stringify({}));
     },
     SET_STORES(state, stores) {
       state.stores = stores;
