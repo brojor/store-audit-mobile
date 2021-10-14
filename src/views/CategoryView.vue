@@ -1,8 +1,10 @@
 <template>
   <div class="category-view">
-    <h1>
-      {{ getCategoryName($route.params.id) }}
-    </h1>
+    <div class="category-name">
+      <h1>
+        {{ getCategoryName($route.params.id) }}
+      </h1>
+    </div>
     <div class="categories">
       <CategoryPoint
         v-for="categoryPoint in categoryPoints($route.params.id)"
@@ -59,10 +61,21 @@ export default {
 </script>
 
 <style scoped>
+.category-name {
+  background-color: #8fc6e9;
+  background-color: #ffd6d6;
+  background-color: #262d2d;
+
+  border-radius: 4px;
+  margin: 4px;
+  padding: 2rem 1rem;
+  border: 2px solid grey
+}
+
 h1 {
-  font-size: 30px;
-  color: black;
-  background-color: #fff;
+  font-size: 2rem;
+  color: white;
+  font-weight: normal;
 }
 p {
   font-size: 1.5rem;
@@ -83,6 +96,6 @@ button {
 }
 .categories {
   flex-grow: 1;
-  overflow: scroll;
+  overflow-x: scroll;
 }
 </style>

@@ -93,30 +93,28 @@ export default {
 
 <style lang="css" scoped>
 .point {
-  border-top: 1px solid black;
   padding: 2.5rem 1.5rem;
-  /* background-color: #ffdec2; */
-  background-color: #edddd4;
   font-size: 1.6rem;
   position: relative;
+  border-radius: 4px;
+  margin: 2px 4px;
+  color: black;
+  background-color: #dfdfdf;
+  border: 1px solid rgb(105, 105, 105);
 }
 .transformSlow {
   transition: transform 0.25s;
 }
 .accepted {
-  /* background-c olor: #3ddc97;
-  background-color: #9BE564;
-  background-color: #26C485;  */
-  /* background-color: #B5D6B2; */
-  color: rgb(34, 163, 34);
-  font-weight: 600;
+  color: rgb(56, 129, 56);
+  color: #00992b;
+  color: #000;
+  background-color: #d0ddc7;
+  border: 1px solid #5ecf7e;
 }
 .rejected {
-  /* background-color: #DD614A; */
-  /* background-color: #BD3B3A; */
-  color: white;
-  color: #dd614a;
-  color: red;
-  font-weight: 600;
+  color: #000;
+  background-color: #edd4d4;
+  border: 1px solid #e60001;
 }
 </style>
