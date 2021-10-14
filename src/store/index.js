@@ -40,6 +40,7 @@ export default new Vuex.Store({
     activeCategory: null,
     stores: [],
     selectedStoreId: '',
+    seed,
   },
   mutations: {
     WRITE_STATUS(state, { accepted, categoryPointId, comment }) {

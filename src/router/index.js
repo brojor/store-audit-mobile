@@ -2,6 +2,8 @@ import Vue from 'vue';
 import VueRouter from 'vue-router';
 import Home from '../views/Home.vue';
 import Login from '../views/Login.vue';
+import CategoryView from '../views/CategoryView.vue';
+
 import store from '../store';
 
 Vue.use(VueRouter);
@@ -30,6 +32,12 @@ const routes = [
     name: 'MobileOnly',
     component: () => import(/* webpackChunkName: "mobileOnly" */ '../views/MobileOnly.vue'),
   },
+  {
+    path: '/category/:id',
+    name: 'categoryView',
+    component: CategoryView,
+  },
+
 ];
 
 const router = new VueRouter({

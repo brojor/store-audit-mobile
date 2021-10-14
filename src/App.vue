@@ -1,7 +1,6 @@
 <template>
   <div id="app">
     <MainHeader />
-
     <router-view />
     <RootModal></RootModal>
   </div>
@@ -30,6 +29,7 @@ export default {
 
 html {
   font-size: 62.5%;
+
 }
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
@@ -37,6 +37,10 @@ html {
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   background-color: #001414;
+  height: 94vh;
+  display: flex;
+  flex-direction: column;
+  position: fixed;
 }
 .btn {
   border: none;

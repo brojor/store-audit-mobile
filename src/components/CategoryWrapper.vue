@@ -1,13 +1,13 @@
 <template>
   <div class="kategory">
     <div
-      @click="dropDown(category.id)"
+      @click="goToCategory(category.id)"
       class="kategory-title"
       :class="{ active: activeKategory === category.id }"
     >
       {{ category.name }}
       <span class="rt-idx">
-      {{ `${$store.getters.achievedScoreInCategory(category.id).toFixed()}%` }}
+        {{ `${$store.getters.achievedScoreInCategory(category.id).toFixed()}%` }}
       </span>
     </div>
     <transition name="roll">
@@ -47,8 +47,8 @@ export default {
     },
   },
   methods: {
-    dropDown(categoryId) {
-      this.activeKategory = this.activeKategory === categoryId ? null : categoryId;
+    goToCategory(categoryId) {
+      this.$router.push(`category/${categoryId}`);
     },
   },
 };
