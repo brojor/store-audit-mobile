@@ -93,7 +93,7 @@ export default {
 
 <style lang="css" scoped>
 .point {
-  padding: 2.5rem 1.5rem;
+  padding: 2rem 1.5rem;
   font-size: 1.6rem;
   position: relative;
   border-radius: 4px;

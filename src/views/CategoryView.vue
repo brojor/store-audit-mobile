@@ -14,18 +14,28 @@
       />
     </div>
     <div class="navigation">
-      <button @click="prev" :disabled="$route.params.id == 1">Předchozí</button
-      ><button @click="menu">Kategorie</button
-      ><button @click="next" :disabled="$route.params.id == numOfCategories">Další</button>
+      <button @click="prev" :disabled="$route.params.id == 1"><ArrowLeft /></button>
+      <button class="home" @click="menu"><home-icon /></button
+      ><button @click="next" :disabled="$route.params.id == numOfCategories">
+        <arrow-right />
+      </button>
     </div>
   </div>
 </template>
 
 <script>
 import CategoryPoint from '@/components/CategoryPoint.vue';
+import HomeIcon from '../components/icons/HomeIcon.vue';
+import ArrowLeft from '../components/icons/ArrowLeft.vue';
+import ArrowRight from '../components/icons/ArrowRight.vue';
 
 export default {
-  components: { CategoryPoint },
+  components: {
+    CategoryPoint,
+    HomeIcon,
+    ArrowLeft,
+    ArrowRight,
+  },
   methods: {
     getCategoryName(categoryId) {
       return this.$store.state.seed.names.categories[categoryId];
@@ -62,14 +72,11 @@ export default {
 
 <style scoped>
 .category-name {
-  background-color: #8fc6e9;
-  background-color: #ffd6d6;
   background-color: #262d2d;
-
   border-radius: 4px;
   margin: 4px;
   padding: 2rem 1rem;
-  border: 2px solid grey
+  border: 2px solid grey;
 }
 
 h1 {
@@ -83,12 +90,27 @@ p {
   background-color: #fff;
 }
 button {
-  padding: 1rem;
+  padding: 1.5rem;
   margin: 0.5rem;
+  outline: none;
+  border: none;
+  margin-bottom: -1rem;
+  color: #fff;
+  background-color: transparent;
+}
+button:disabled {
+  color: rgb(105, 105, 105);
+}
+button.home {
+  padding: 0.5rem;
 }
 .navigation {
+  display: flex;
   justify-content: space-around;
+  align-items: center;
+  margin: 0.5rem;
 }
+
 .category-view {
   display: flex;
   flex-direction: column;

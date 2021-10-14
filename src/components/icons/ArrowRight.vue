@@ -1,0 +1,24 @@
+<!-- eslint-disable max-len -->
+<template>
+  <svg
+  class="icon"
+    width="24"
+    height="24"
+    xmlns="http://www.w3.org/2000/svg"
+    viewBox="0 0 24 24"
+    fill="currentColor"
+    color="#000"
+  >
+    <path d="M0 0h24v24H0V0z" fill="none"></path>
+    <path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z"></path>
+  </svg>
+</template>
+
+<style scoped>
+.icon {
+  color: inherit;
+  width: 4rem;
+  height: auto;
+}
+
+</style>
