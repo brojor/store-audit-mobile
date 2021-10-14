@@ -53,6 +53,7 @@ export default {
         const payload = {
           storeId: this.$store.state.selectedStoreId,
           results: this.$store.state.results,
+          date: new Date(),
         };
         DataService.sendResults(payload)
           .then(({ data }) => {
