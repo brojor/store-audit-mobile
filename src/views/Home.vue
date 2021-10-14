@@ -11,7 +11,6 @@
 import RootModal from '@/components/modal/RootModal.vue';
 import CategoryWrapper from '@/components/CategoryWrapper.vue';
 import Warning from '@/components/modal/Warning.vue';
-import Api from '@/services/Api';
 import DataService from '../services/DataService';
 import StoreSelector from '../components/StoreSelector.vue';
 
@@ -30,12 +29,6 @@ export default {
       justEdited: {},
     };
   },
-  mounted() {
-    const token = localStorage.getItem('token');
-    Api.defaults.headers.common.Authorization = `Bearer ${token}`;
-    this.$store.dispatch('getStores');
-  },
-
   computed: {
     userIsLogged() {
       return this.$store.getters.userIsLogged;
