@@ -27,7 +27,7 @@ export default {
       posX: {},
       touchTarget: null,
       moveLength: 0,
-      lastState: { accepted: null, storeId: null },
+      lastState: '',
     };
   },
   computed: {
@@ -46,16 +46,10 @@ export default {
         this.$refs.touchTarget.style.transform = `translate3d(${this.moveLength}px, 0px, 0px)`;
       }
       if (this.thresholdExceeded()) {
-        const swipeDirection = this.moveLength > 0 ? 'right' : 'left';
-        const accepted = swipeDirection === 'right';
-
-        if (
-          (swipeDirection === 'right' && this.lastState.accepted !== true) ||
-          (swipeDirection === 'left' && this.lastState.accepted !== false) ||
-          this.lastState.storeId !== this.selectedStoreId
-        ) {
-          this.lastState.accepted = accepted;
-          this.lastState.storeId = this.selectedStoreId;
+        const accepted = this.isAccepted();
+        const currentState = this.getCurrentState(accepted);
+        if (currentState !== this.lastState) {
+          this.lastState = currentState;
           this.writeStatus(categoryPoint.newId, accepted);
         }
       }
@@ -83,6 +77,15 @@ export default {
         categoryPointId,
         comment,
       });
+    },
+    getCurrentState(accepted) {
+      const storeId = this.$store.state.selectedStoreId;
+      const pointId = this.categoryPoint.newId;
+      return `${storeId}${pointId}${accepted}`;
+    },
+    isAccepted() {
+      const swipeDirection = this.moveLength > 0 ? 'right' : 'left';
+      return swipeDirection === 'right';
     },
   },
 };

@@ -74,19 +74,15 @@ button {
   margin: 0.5rem;
 }
 .navigation {
-  background-color: rgb(202, 235, 164);
-  display: flex;
   justify-content: space-around;
 }
 .category-view {
   display: flex;
   flex-direction: column;
   height: 94%;
-  border: 2px solid rgb(0, 255, 13);
 }
 .categories {
   flex-grow: 1;
   overflow: scroll;
-  border: 2∆px solid rgb(255, 166, 0);
 }
 </style>
