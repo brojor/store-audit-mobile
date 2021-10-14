@@ -1,7 +1,13 @@
 import axios from 'axios';
 
+const baseURL = process.env.NODE_ENV === 'development'
+  ? 'http://192.168.1.163:5000'
+  : 'https://store-audit.herokuapp.com';
+
+console.log({ baseURL });
+
 const axiosInstance = axios.create({
-  baseURL: process.env.VUE_APP_API_URL,
+  baseURL,
   headers: {
     Accept: 'application/json',
     'Content-Type': 'application/json',
