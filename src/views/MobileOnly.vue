@@ -7,8 +7,8 @@
 <style scoped>
 .not-for-desktop {
   position: absolute;
-  width: 100%;
-  height: 100%;
+  width: 100vw;
+  height: 100vh;
   background-color: #001414;
   top: 0;
   left: 0;
@@ -22,8 +22,8 @@
   color: #fff;
   padding: 6rem;
 }
-span{
-    color: #e60001;
-    font-weight: 800;
+span {
+  color: #e60001;
+  font-weight: 800;
 }
 </style>
