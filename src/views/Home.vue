@@ -8,6 +8,7 @@
 </template>
 
 <script>
+import Api from '@/services/Api';
 import RootModal from '@/components/modal/RootModal.vue';
 import CategoryWrapper from '@/components/CategoryWrapper.vue';
 import Warning from '@/components/modal/Warning.vue';
@@ -20,6 +21,11 @@ export default {
     RootModal,
     CategoryWrapper,
     StoreSelector,
+  },
+  mounted() {
+    const token = localStorage.getItem('token');
+    Api.defaults.headers.common.Authorization = `Bearer ${token}`;
+    this.$store.dispatch('getStores');
   },
 
   data() {

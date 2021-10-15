@@ -34,7 +34,7 @@ Vue.use(Vuex);
 export default new Vuex.Store({
   state: {
     categories,
-    results: {},
+    results: { ...emptyResults },
     modal: { isOpen: false, title: '', message: '' },
     commentedPoint: { categoryId: null, categoryPointId: null },
     activeCategory: null,

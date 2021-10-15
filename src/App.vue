@@ -7,7 +7,6 @@
 </template>
 
 <script>
-import Api from '@/services/Api';
 import RootModal from './components/modal/RootModal.vue';
 import MainHeader from './components/MainHeader.vue';
 
@@ -15,11 +14,6 @@ export default {
   components: {
     MainHeader,
     RootModal,
-  },
-  mounted() {
-    const token = localStorage.getItem('token');
-    Api.defaults.headers.common.Authorization = `Bearer ${token}`;
-    this.$store.dispatch('getStores');
   },
 };
 </script>
