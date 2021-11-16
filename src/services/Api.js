@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const baseURL = process.env.NODE_ENV === 'development'
-  ? 'http://192.168.1.163:5000'
+  ? process.env.VUE_APP_LOCAL_URL
   : 'https://store-audit.herokuapp.com';
 
 console.log({ baseURL });
