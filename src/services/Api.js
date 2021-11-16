@@ -14,6 +14,11 @@ const axiosInstance = axios.create({
   },
 });
 
+if (localStorage.getItem('token')) {
+  const token = localStorage.getItem('token');
+  axiosInstance.defaults.headers.common.Authorization = `Bearer ${token}`;
+}
+
 axiosInstance.interceptors.response.use(
   (response) => response,
   (error) => {

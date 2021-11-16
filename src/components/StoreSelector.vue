@@ -7,15 +7,16 @@
 </template>
 <script>
 export default {
+  mounted() {
+    this.$store.dispatch('getStores');
+  },
   computed: {
     selectedStore: {
       get() {
         return this.$store.state.selectedStoreId;
       },
       set(id) {
-        console.log('nastavuji: ', id);
         this.$store.dispatch('changeStoreId', id);
-        // this.$store.commit('SET_SELECTED_STORE', id);
       },
     },
     listOfStores() {

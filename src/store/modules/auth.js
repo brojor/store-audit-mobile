@@ -4,7 +4,6 @@ import Api from '@/services/Api';
 
 const state = {
   token: localStorage.getItem('token') || null,
-  stores: JSON.parse(localStorage.getItem('stores')) || [],
 };
 const getters = {
   isAuthenticated: (state) => {
@@ -22,11 +21,10 @@ const mutations = {
   },
 };
 const actions = {
-  login({ commit, dispatch }, credentials) {
+  login({ commit }, credentials) {
     return AuthService.login(credentials)
       .then(({ data }) => {
         commit('SET_TOKEN', data.token);
-        dispatch('getStores');
       })
       .catch((err) => {
         console.log(err.response.data);
