@@ -16,9 +16,6 @@
   width: 2.5rem;
   height: auto;
   cursor: pointer;
-
-  position: absolute;
-  right: 1rem;
 }
 .logout-icon:hover {
   fill: #da5252;

@@ -12,6 +12,9 @@ import emptyResults from '../empty.json';
 import seed from '../seed.json';
 
 function calcAvailableScore(weights, categoryId) {
+  if (!categoryId) {
+    return Object.values(seed.weights).reduce((acc, weight) => acc + weight, 0);
+  }
   return Object.entries(weights).reduce((sum, [id, weight]) => {
     if (Number(id.slice(1, 3)) === categoryId) {
       return sum + weight;
@@ -19,14 +22,29 @@ function calcAvailableScore(weights, categoryId) {
     return sum;
   }, 0);
 }
-function calcAchievedScore(results, categoryId) {
-  const { categoryPoints } = results.find((category) => category.id === categoryId);
+
+function calcScore(categoryPoints) {
   return categoryPoints.reduce((score, categoryPoint) => {
     if (categoryPoint.accepted) {
       return score + categoryPoint.weight;
     }
     return score;
   }, 0);
+}
+
+function calcAchievedScore(results, categoryId) {
+  let categoryPoints;
+  if (categoryId) {
+    categoryPoints = results.find((category) => category.id === categoryId).categoryPoints;
+  } else {
+    categoryPoints = results
+      .reduce((arr, category) => {
+        arr.push(category.categoryPoints);
+        return arr;
+      }, [])
+      .flat();
+  }
+  return calcScore(categoryPoints);
 }
 
 Vue.use(Vuex);
@@ -158,6 +176,12 @@ export default new Vuex.Store({
         const achievedScore = calcAchievedScore(getters.results2d, categoryId);
         return (achievedScore / availableScore) * 100;
       };
+    },
+    totalScore(_, getters) {
+      const available = calcAvailableScore(seed.weights);
+      const achieved = calcAchievedScore(getters.results2d);
+      const perc = (achieved / available) * 100;
+      return { available, achieved, perc };
     },
   },
   modules: { auth },
