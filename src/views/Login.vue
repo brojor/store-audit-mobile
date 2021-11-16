@@ -39,7 +39,6 @@ export default {
   },
   methods: {
     submit() {
-      console.log('submited', this.username, this.password);
       this.$store
         .dispatch('login', {
           username: this.username,
