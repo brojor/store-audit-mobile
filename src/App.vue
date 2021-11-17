@@ -29,17 +29,21 @@ export default {
 
 html {
   font-size: 62.5%;
+  height: 100vh;
+  width: 100vw;
+  /* overflow: hidden; */
+  background-color: #053030;
 }
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
-  background-color: #001414;
-  height: 94vh;
-  display: flex;
-  flex-direction: column;
-  position: fixed;
+  height: 100%;
+  width: 100%;
+  /* display: flex;
+  flex-direction: column; */
+  /* position: fixed; */
 }
 .btn {
   border: none;

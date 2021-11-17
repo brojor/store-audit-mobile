@@ -69,7 +69,7 @@ export default {
 main {
   position: relative;
   width: 100vw;
-  height: 100vh;
+  /* height: 100vh; */
   overflow-x: hidden;
   padding: 0.5rem;
 }

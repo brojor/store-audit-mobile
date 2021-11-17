@@ -12,6 +12,7 @@
         :categoryPoint="categoryPoint"
         :category="$route.params.id"
       />
+      <div class="spacer"></div>
     </div>
     <div class="navigation">
       <button @click="prev" :disabled="$route.params.id == 1"><ArrowLeft /></button>
@@ -71,6 +72,20 @@ export default {
 </script>
 
 <style scoped>
+.category-view {
+  height: 100%;
+  /* display: flex;
+  flex-direction: column; */
+  /* height: 94%; */
+}
+.categories {
+  display: flex;
+  flex-direction: column;
+
+  /* overflow: hidden; */
+  /* flex-grow: 1; */
+  overflow-x: scroll;
+}
 .category-name {
   background-color: #262d2d;
   border-radius: 4px;
@@ -90,11 +105,11 @@ p {
   background-color: #fff;
 }
 button {
-  padding: 1.5rem;
-  margin: 0.5rem;
+  padding: 1rem;
+  /* margin: 0.5rem; */
   outline: none;
   border: none;
-  margin-bottom: -1rem;
+  /* margin-bottom: -1rem; */
   color: #fff;
   background-color: transparent;
 }
@@ -105,19 +120,17 @@ button.home {
   padding: 0.5rem;
 }
 .navigation {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  background-color: #001514;
   display: flex;
   justify-content: space-around;
   align-items: center;
-  margin: 0.5rem;
 }
 
-.category-view {
-  display: flex;
-  flex-direction: column;
-  height: 94%;
-}
-.categories {
-  flex-grow: 1;
-  overflow-x: scroll;
+.spacer {
+  height: 8rem;
+  /* background-color: yellow; */
 }
 </style>
