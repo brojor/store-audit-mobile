@@ -47,6 +47,11 @@ export default {
 }
 
 .main-header {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 10;
+  background-color: #000;
   display: flex;
   align-items: center;
   justify-content: space-between;
