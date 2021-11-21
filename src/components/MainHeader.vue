@@ -2,7 +2,7 @@
   <header class="main-header">
     <div class="total-score">
       <div class="title-small">Total score:</div>
-      <div class="perc">{{$store.getters.totalScore.perc.toFixed(2)}}%</div>
+      <div class="perc">{{ $store.getters.totalScore.perc.toFixed(2) }}%</div>
     </div>
     <div class="app-title">
       <img class="logo-small" src="@/assets/logo-small.png" alt="Hannah logo" />

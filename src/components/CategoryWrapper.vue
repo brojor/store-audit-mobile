@@ -7,7 +7,7 @@
     >
       {{ category.name }}
       <span class="rt-idx">
-        {{ `${$store.getters.achievedScoreInCategory(category.id).toFixed()}%` }}
+        {{ `${$store.getters.achievedScoreInCategory(category.id).perc.toFixed()}%` }}
       </span>
     </div>
     <transition name="roll">

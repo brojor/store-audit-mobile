@@ -172,9 +172,10 @@ export default new Vuex.Store({
     },
     achievedScoreInCategory(state, getters) {
       return (categoryId) => {
-        const availableScore = calcAvailableScore(seed.weights, categoryId);
-        const achievedScore = calcAchievedScore(getters.results2d, categoryId);
-        return (achievedScore / availableScore) * 100;
+        const available = calcAvailableScore(seed.weights, categoryId);
+        const achieved = calcAchievedScore(getters.results2d, categoryId);
+        const perc = (achieved / available) * 100;
+        return { available, achieved, perc };
       };
     },
     totalScore(_, getters) {

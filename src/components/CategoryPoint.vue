@@ -11,17 +11,31 @@
     @touchmove="touchmove($event, category, categoryPoint)"
     draggable="true"
   >
+    <div class="accepted-icon">
+      <RejectedIcon v-if="categoryPoint.accepted === false" />
+      <QuestionmarkIcon v-if="categoryPoint.accepted === null" />
+      <AcceptedIcon v-if="categoryPoint.accepted === true" />
+    </div>
+    <div class="weight-icon">
+      <ScaleIcon />
+      <p>{{ categoryPoint.weight }}</p>
+    </div>
+
     <p>{{ categoryPoint.name }}</p>
-    <p class="rt-idx">{{ categoryPoint.weight }} b.</p>
+    <!-- <p class="rt-idx">{{ categoryPoint.weight }} b.</p> -->
   </div>
 </template>
 
 <script>
+import RejectedIcon from './icons/rejectedIcon.vue';
+import QuestionmarkIcon from './icons/questionmarkIcon.vue';
+import AcceptedIcon from './icons/acceptedIcon.vue';
+import ScaleIcon from './icons/scaleIcon.vue';
+
 export default {
   /* eslint-disable operator-linebreak */
   name: 'CategoryPoint',
   props: ['category', 'categoryPoint'],
-
   data() {
     return {
       posX: {},
@@ -88,33 +102,58 @@ export default {
       return swipeDirection === 'right';
     },
   },
+  components: {
+    RejectedIcon,
+    QuestionmarkIcon,
+    AcceptedIcon,
+    ScaleIcon,
+  },
 };
 </script>
 
 <style lang="css" scoped>
+.weight-icon {
+  position: absolute;
+  top: 3px;
+  right: 3px;
+  /* display: flex;
+  align-items: center;
+  justify-content: center; */
+  font-size: 1.2rem;
+}
+.accepted-icon {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+}
 .point {
-  padding: 2rem 1.5rem;
+  padding: 2rem 4rem;
   font-size: 1.6rem;
   position: relative;
   border-radius: 4px;
   margin: 2px 4px;
   color: black;
-  background-color: #dfdfdf;
-  border: 1px solid rgb(105, 105, 105);
+  /* color: rgb(51, 51, 51); */
+  background-color: #cfcfcf;
+  /* border: 2px solid #0087db; */
 }
 .transformSlow {
   transition: transform 0.25s;
 }
 .accepted {
-  color: rgb(56, 129, 56);
-  color: #00992b;
+  /* color: rgb(56, 129, 56);
+  color: #02922b;
   color: #000;
+  color: rgb(255, 255, 255);
   background-color: #d0ddc7;
-  border: 1px solid #5ecf7e;
+  background-color: #2e7e5f; */
+  /* border: 1px solid #5ecf7e; */
 }
 .rejected {
-  color: #000;
+  /* color: #000;
+  color: #fff;
   background-color: #edd4d4;
-  border: 1px solid #e60001;
+  background-color: #a10000; */
+  /* border: 1px solid #e60001; */
 }
 </style>

@@ -5,6 +5,11 @@
         {{ getCategoryName($route.params.id) }}
       </h1>
     </div>
+    <div class="status-bar">
+      <span>Maximální počet bodů : {{ score.available }}</span>
+      <span>Dosažený počet bodů :  {{ score.achieved }}</span>
+      <span>Procentuální hodnocení:  {{ score.perc.toFixed(0) }}%</span>
+    </div>
     <div class="categories">
       <CategoryPoint
         v-for="categoryPoint in categoryPoints($route.params.id)"
@@ -67,13 +72,26 @@ export default {
         return currentCategory.categoryPoints;
       };
     },
+    score() {
+      const categoryId = Number(this.$route.params.id);
+      console.log({ categoryId });
+      return this.$store.getters.achievedScoreInCategory(categoryId);
+    },
   },
 };
 </script>
 
 <style scoped>
+.status-bar {
+  color: #fff;
+  /* color: #bfe7ff; */
+  display: flex;
+  justify-content: space-between;
+  padding: 0.5rem 4px;
+  font-size: 1.1rem;
+}
 .category-view {
-  margin-top: 7rem;
+  margin-top: 6.2rem;
   height: 100%;
   /* background-color: rgb(90, 90, 90); */
   /* display: flex;
