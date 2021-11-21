@@ -52,7 +52,10 @@ Vue.use(Vuex);
 export default new Vuex.Store({
   state: {
     categories,
-    results: { ...emptyResults },
+    results: {
+      ...emptyResults,
+      ...JSON.parse(localStorage.getItem(localStorage.getItem('selectedStoreId'))),
+    },
     modal: { isOpen: false, title: '', message: '' },
     commentedPoint: { categoryId: null, categoryPointId: null },
     activeCategory: null,
