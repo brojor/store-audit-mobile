@@ -6,9 +6,9 @@
       </h1>
     </div>
     <div class="status-bar">
-      <span>Maximální počet bodů : {{ score.available }}</span>
-      <span>Dosažený počet bodů :  {{ score.achieved }}</span>
-      <span>Procentuální hodnocení:  {{ score.perc.toFixed(0) }}%</span>
+      <span>Max. score : {{ score.available }}</span>
+      <span>Dosažené score:  {{ score.achieved }}</span>
+      <span>Splněno na {{ score.perc.toFixed(0) }}%</span>
     </div>
     <div class="categories">
       <CategoryPoint

@@ -4,7 +4,7 @@
     height="22"
     xmlns="http://www.w3.org/2000/svg"
     viewBox="0 0 20 20"
-    fill="#444"
+    fill="#757575"
     color="#000"
   >
     <path

@@ -16,13 +16,9 @@
       <QuestionmarkIcon v-if="categoryPoint.accepted === null" />
       <AcceptedIcon v-if="categoryPoint.accepted === true" />
     </div>
-    <div class="weight-icon">
-      <ScaleIcon />
-      <p>{{ categoryPoint.weight }}</p>
-    </div>
+    <weight-badge :value="categoryPoint.weight" />
 
-    <p>{{ categoryPoint.name }}</p>
-    <!-- <p class="rt-idx">{{ categoryPoint.weight }} b.</p> -->
+    <p class="category-point-name">{{ categoryPoint.name }}</p>
   </div>
 </template>
 
@@ -30,7 +26,7 @@
 import RejectedIcon from './icons/rejectedIcon.vue';
 import QuestionmarkIcon from './icons/questionmarkIcon.vue';
 import AcceptedIcon from './icons/acceptedIcon.vue';
-import ScaleIcon from './icons/scaleIcon.vue';
+import WeightBadge from './weightBadge.vue';
 
 export default {
   /* eslint-disable operator-linebreak */
@@ -106,7 +102,7 @@ export default {
     RejectedIcon,
     QuestionmarkIcon,
     AcceptedIcon,
-    ScaleIcon,
+    WeightBadge,
   },
 };
 </script>
@@ -132,10 +128,14 @@ export default {
   position: relative;
   border-radius: 4px;
   margin: 2px 4px;
+
   color: black;
   /* color: rgb(51, 51, 51); */
   background-color: #cfcfcf;
   /* border: 2px solid #0087db; */
+}
+.category-point-name {
+  margin-top: 0.75rem;
 }
 .transformSlow {
   transition: transform 0.25s;
