@@ -1,5 +1,5 @@
 <template>
-  <header class="main-header">
+  <header class="main-header" v-if="userIsLogged">
     <div class="total-score">
       <div class="title-small">Total score:</div>
       <div class="perc">{{ $store.getters.totalScore.perc.toFixed(2) }}%</div>
@@ -18,6 +18,11 @@
 import LogoutIcon from './icons/Logout.vue';
 
 export default {
+  computed: {
+    userIsLogged() {
+      return this.$store.getters.isAuthenticated;
+    },
+  },
   components: {
     LogoutIcon,
   },
