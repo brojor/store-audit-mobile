@@ -65,7 +65,9 @@ export default {
 }
 .kategory-title {
   /* background-color: #564d51; */
-  background-color: #262d2d;
+  /* background-color: #262d2d; */
+  background-color: #0b555a;
+  background-color: #086199;
   color: white;
   padding: 1.5rem 0;
   font-size: 1.8rem;

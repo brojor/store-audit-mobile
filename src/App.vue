@@ -32,7 +32,8 @@ html {
   height: 100vh;
   width: 100vw;
   /* overflow: hidden; */
-  background-color: #053030;
+  /* background-color: #053030; */
+  background-color: #011414;
 }
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;

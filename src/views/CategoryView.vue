@@ -108,10 +108,14 @@ export default {
 }
 .category-name {
   background-color: #262d2d;
+  background-color: #0b555a;
+  background-color: #02b5c2;
+  background-color: #1796e6;
+  background-color: #086199;
   border-radius: 4px;
   margin: 4px;
-  padding: 2rem 1rem;
-  border: 2px solid grey;
+  padding: 1.25rem 1rem;
+  /* border: 2px solid grey; */
 }
 
 h1 {

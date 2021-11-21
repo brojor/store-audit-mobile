@@ -18,6 +18,7 @@
 <style scoped>
 .icon {
   color: #e60001;
+  /* color: #1796E6; */
   width: 4rem;
   height: auto;
   cursor: pointer;
