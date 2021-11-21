@@ -1,15 +1,18 @@
 <template>
   <div class="category-view">
-    <div class="category-name">
-      <h1>
-        {{ getCategoryName($route.params.id) }}
-      </h1>
+    <div class="fixed">
+      <div class="category-name">
+        <h1>
+          {{ getCategoryName($route.params.id) }}
+        </h1>
+      </div>
+      <div class="status-bar">
+        <span>Max. score : {{ score.available }}</span>
+        <span>Dosažené score: {{ score.achieved }}</span>
+        <span>Splněno na {{ score.perc.toFixed(0) }}%</span>
+      </div>
     </div>
-    <div class="status-bar">
-      <span>Max. score : {{ score.available }}</span>
-      <span>Dosažené score:  {{ score.achieved }}</span>
-      <span>Splněno na {{ score.perc.toFixed(0) }}%</span>
-    </div>
+
     <div class="categories">
       <CategoryPoint
         v-for="categoryPoint in categoryPoints($route.params.id)"
@@ -82,6 +85,13 @@ export default {
 </script>
 
 <style scoped>
+.fixed {
+  margin-top: 6rem;
+  position: fixed;
+  width: 100%;
+  z-index: 20;
+  background-color: #011414;
+}
 .status-bar {
   color: #fff;
   /* color: #bfe7ff; */
@@ -91,20 +101,21 @@ export default {
   font-size: 1.1rem;
 }
 .category-view {
-  margin-top: 6.2rem;
-  height: 100%;
+  display: flex;
+  flex-direction: column;
   /* background-color: rgb(90, 90, 90); */
   /* display: flex;
   flex-direction: column; */
   /* height: 94%; */
 }
 .categories {
+  margin-top: 14rem;
   display: flex;
   flex-direction: column;
-
-  /* overflow: hidden; */
+  flex-grow: 1;
+  overflow: hidden;
   /* flex-grow: 1; */
-  overflow-x: scroll;
+  /* overflow: scroll; */
 }
 .category-name {
   background-color: #262d2d;
