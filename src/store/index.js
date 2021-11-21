@@ -57,7 +57,7 @@ export default new Vuex.Store({
     commentedPoint: { categoryId: null, categoryPointId: null },
     activeCategory: null,
     stores: [],
-    selectedStoreId: '',
+    selectedStoreId: localStorage.getItem('selectedStoreId') || '',
     seed,
   },
   mutations: {
@@ -91,6 +91,7 @@ export default new Vuex.Store({
     },
     SET_SELECTED_STORE(state, id) {
       state.selectedStoreId = id;
+      localStorage.setItem('selectedStoreId', id);
     },
     SET_RESULTS(state, resultsToSet) {
       state.results = resultsToSet;
@@ -119,12 +120,12 @@ export default new Vuex.Store({
       commit('OPEN_MODAL', { title: 'Chybí vyplnit následující body', component: UnfilledPoints });
       commit('SET_UNFILLED_POINTS', unfilledPoints);
     },
-    getStores({ commit }) {
+    getStores({ commit, state }) {
       return Api.get('/stores')
         .then(({ data }) => {
+          console.log('obdržel jsem seznam storů');
           commit('SET_STORES', data.stores);
-          const { id } = data.stores[0];
-          commit('SET_SELECTED_STORE', id);
+          const id = state.selectedStoreId || data.stores[0].id;
           this.dispatch('changeStoreId', id);
         })
         .catch((err) => console.log(err));
