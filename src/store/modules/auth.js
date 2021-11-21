@@ -32,6 +32,7 @@ const actions = {
   },
   logout({ commit }) {
     console.log('odhlašuji');
+    commit('SET_STORES', []);
     commit('SET_TOKEN', '');
   },
 };

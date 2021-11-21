@@ -8,7 +8,9 @@
 <script>
 export default {
   mounted() {
-    this.$store.dispatch('getStores');
+    if (!this.$store.state.stores.length) {
+      this.$store.dispatch('getStores');
+    }
   },
   computed: {
     selectedStore: {
