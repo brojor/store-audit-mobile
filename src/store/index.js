@@ -1,69 +1,38 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
 
-import categories from '@/skeleton.json';
-
-import UnfilledPoints from '@/components/modal/UnfilledPoints.vue';
-import WriteComment from '@/components/modal/WriteComment.vue';
-
-import Api from '@/services/Api';
+import Api from '../services/Api';
+import WriteComment from '../components/modal/WriteComment.vue';
+import UnfilledPoints from '../components/modal/UnfilledPoints.vue';
 import auth from './modules/auth';
-import emptyResults from '../empty.json';
-import seed from '../seed.json';
 
-function calcAvailableScore(weights, categoryId) {
-  if (!categoryId) {
-    return Object.values(seed.weights).reduce((acc, weight) => acc + weight, 0);
-  }
-  return Object.entries(weights).reduce((sum, [id, weight]) => {
-    if (Number(id.slice(1, 3)) === categoryId) {
-      return sum + weight;
-    }
-    return sum;
-  }, 0);
-}
-
-function calcScore(categoryPoints) {
-  return categoryPoints.reduce((score, categoryPoint) => {
-    if (categoryPoint.accepted) {
-      return score + categoryPoint.weight;
-    }
-    return score;
-  }, 0);
-}
-
-function calcAchievedScore(results, categoryId) {
-  let categoryPoints;
-  if (categoryId) {
-    categoryPoints = results.find((category) => category.id === categoryId).categoryPoints;
-  } else {
-    categoryPoints = results
-      .reduce((arr, category) => {
-        arr.push(category.categoryPoints);
-        return arr;
-      }, [])
-      .flat();
-  }
-  return calcScore(categoryPoints);
-}
+const buildEmptyResults = (seed) => {
+  const listOfIds = seed.map(({ categoryPoints }) => categoryPoints.map(({ id }) => id)).flat();
+  return listOfIds.reduce((obj, id) => ({ ...obj, [id]: { accepted: null } }), {});
+};
 
 Vue.use(Vuex);
 
 export default new Vuex.Store({
   state: {
-    categories,
-    results: {
-      ...emptyResults,
-      ...JSON.parse(localStorage.getItem(localStorage.getItem('selectedStoreId'))),
-    },
+    categories: JSON.parse(localStorage.getItem('seed')) || [],
+    results: {},
     modal: { isOpen: false, title: '', message: '' },
     commentedPoint: { categoryId: null, categoryPointId: null },
     activeCategory: null,
     stores: [],
     selectedStoreId: localStorage.getItem('selectedStoreId') || '',
-    seed,
   },
   mutations: {
+    SET_CATEGORY_NAMES(state, seed) {
+      state.categories = seed;
+      localStorage.setItem('seed', JSON.stringify(seed));
+    },
+    SET_RESULTS(state) {
+      const emptyResults = buildEmptyResults(state.categories);
+      const savedResults = JSON.parse(localStorage.getItem(state.selectedStoreId)) || {};
+      state.results = { ...emptyResults, ...savedResults };
+    },
     WRITE_STATUS(state, { accepted, categoryPointId, comment }) {
       state.results[categoryPointId] = { accepted, comment };
       const localStorageEntry = JSON.parse(localStorage.getItem(state.selectedStoreId)) || {};
@@ -86,7 +55,7 @@ export default new Vuex.Store({
       state.activeCategory = categoryId;
     },
     RESET_RESULTS(state) {
-      state.results = { ...emptyResults };
+      state.results = { ...state.emptyResults };
       localStorage.setItem(state.selectedStoreId, JSON.stringify({}));
     },
     SET_STORES(state, stores) {
@@ -96,19 +65,20 @@ export default new Vuex.Store({
       state.selectedStoreId = id;
       localStorage.setItem('selectedStoreId', id);
     },
-    SET_RESULTS(state, resultsToSet) {
-      state.results = resultsToSet;
-    },
     SET_PROMISE(state, promise) {
       state.promise = promise;
     },
   },
   actions: {
+    getSeed({ commit }) {
+      return Api.get('/category-names').then(({ data: seed }) => {
+        commit('SET_CATEGORY_NAMES', seed);
+        commit('SET_RESULTS');
+      });
+    },
     changeStoreId({ commit }, id) {
-      const auditInProgress = JSON.parse(localStorage.getItem(id)) || {};
-      const results = { ...emptyResults, ...auditInProgress };
-      commit('SET_RESULTS', results);
       commit('SET_SELECTED_STORE', id);
+      commit('SET_RESULTS');
     },
     addComment({ commit }) {
       return new Promise((resolve) => {
@@ -120,13 +90,12 @@ export default new Vuex.Store({
       });
     },
     showUnfilledPointsWarning({ commit }, unfilledPoints) {
-      commit('OPEN_MODAL', { title: 'Chybí vyplnit následující body', component: UnfilledPoints });
+      commit('OPEN_MODAL', { title: 'Nedokončená hodnocení: ', component: UnfilledPoints });
       commit('SET_UNFILLED_POINTS', unfilledPoints);
     },
     getStores({ commit, state }) {
       return Api.get('/stores')
         .then(({ data }) => {
-          console.log('obdržel jsem seznam storů');
           commit('SET_STORES', data.stores);
           const id = state.selectedStoreId || data.stores[0].id;
           this.dispatch('changeStoreId', id);
@@ -135,58 +104,61 @@ export default new Vuex.Store({
     },
   },
   getters: {
-    results2d(state) {
-      return Object.entries(state.results).reduce((res, [id, val]) => {
-        const categoryId = Number(id.slice(1, 3));
-        const categoryPointId = Number(id.slice(4));
-        const categoryName = seed.names.categories[categoryId];
-        const categoryPointName = seed.names.categoryPoints[id];
-        const categoryPointWeight = seed.weights[id];
-        const value = {
-          ...val,
-          id: categoryPointId,
-          name: categoryPointName,
-          weight: categoryPointWeight,
-          newId: id,
-        };
-        if (!res[categoryId - 1]) {
-          // eslint-disable-next-line no-param-reassign
-          res[categoryId - 1] = {
-            id: categoryId,
-            categoryPoints: [value],
-            name: categoryName,
-          };
-        } else {
-          res[categoryId - 1].categoryPoints.push(value);
-        }
-        return res;
-      }, []);
-    },
-    listOfUnfilledItems(state, getters) {
-      return getters.results2d.reduce((arr, category) => {
-        const { name } = category;
-        const unfilledPoints = category.categoryPoints
-          .filter((categoryPoint) => categoryPoint.accepted === null)
-          .map((categoryPoint) => categoryPoint.name);
-        if (unfilledPoints.length) {
-          arr.push({ name, unfilledPoints });
-        }
-        return arr;
-      }, []);
-    },
-    achievedScoreInCategory(state, getters) {
+    availableScore(state) {
       return (categoryId) => {
-        const available = calcAvailableScore(seed.weights, categoryId);
-        const achieved = calcAchievedScore(getters.results2d, categoryId);
-        const perc = (achieved / available) * 100;
-        return { available, achieved, perc };
+        if (!categoryId) {
+          return state.categories
+            .map(({ categoryPoints }) => categoryPoints.map(({ weight }) => weight))
+            .flat()
+            .reduce((acc, weight) => acc + weight, 0);
+        }
+        return state.categories
+          .find(({ id }) => id === categoryId)
+          .categoryPoints.map(({ weight }) => weight)
+          .reduce((acc, weight) => acc + weight, 0);
       };
     },
-    totalScore(_, getters) {
-      const available = calcAvailableScore(seed.weights);
-      const achieved = calcAchievedScore(getters.results2d);
-      const perc = (achieved / available) * 100;
-      return { available, achieved, perc };
+    achievedScore(state) {
+      return (categoryId) => {
+        let categoryPoints;
+
+        if (categoryId) {
+          ({ categoryPoints } = state.categories.find(({ id }) => id === categoryId));
+        } else {
+          categoryPoints = state.categories.reduce(
+            (arr, category) => [...arr, ...category.categoryPoints],
+            [],
+          );
+        }
+
+        const score = categoryPoints.reduce(
+          (acc, point) => (state.results[point.id].accepted ? acc + point.weight : acc),
+          0,
+        );
+        return score;
+      };
+    },
+    score(state, getters) {
+      return (categoryId) => {
+        if (Object.keys(state.results).length) {
+          const available = getters.availableScore(categoryId);
+          const achieved = getters.achievedScore(categoryId);
+          const perc = (achieved / available) * 100;
+          return { available, achieved, perc };
+        }
+        return { perc: 0 };
+      };
+    },
+    listOfUnfilledItems(state) {
+      return state.categories.reduce((arr, category) => {
+        let counter = 0;
+        category.categoryPoints.forEach(({ id }) => {
+          if (state.results[id].accepted === null) {
+            counter += 1;
+          }
+        });
+        return [...arr, { name: category.name, count: counter, id: category.id }];
+      }, []);
     },
   },
   modules: { auth },

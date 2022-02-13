@@ -9,8 +9,8 @@
 
 <script>
 import RootModal from '@/components/modal/RootModal.vue';
-import CategoryWrapper from '@/components/CategoryWrapper.vue';
-import Warning from '@/components/modal/Warning.vue';
+import CategoryWrapper from '../components/CategoryWrapper.vue';
+import Warning from '../components/modal/Warning.vue';
 import DataService from '../services/DataService';
 import StoreSelector from '../components/StoreSelector.vue';
 
@@ -33,7 +33,7 @@ export default {
       return this.$store.getters.userIsLogged;
     },
     categories() {
-      return this.$store.getters.results2d;
+      return this.$store.state.categories;
     },
   },
   methods: {
@@ -62,6 +62,9 @@ export default {
       }
     },
   },
+  mounted() {
+    this.$store.dispatch('getSeed');
+  },
 };
 </script>
 
@@ -75,9 +78,6 @@ main {
   padding: 0.5rem;
 }
 
-‹ .active {
-  background-color: #201d1e;
-}
 .btn-w100 {
   width: 100%;
   margin: 4px 0;

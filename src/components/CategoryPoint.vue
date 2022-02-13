@@ -1,23 +1,14 @@
 <template>
   <div
     class="point transformSlow"
-    :class="{
-      accepted: categoryPoint.accepted === true,
-      rejected: categoryPoint.accepted === false,
-    }"
     :ref="'touchTarget'"
-    @touchstart="touchstart(categoryPoint.id, $event)"
+    @touchstart="touchstart($event)"
     @touchend="touchend()"
-    @touchmove="touchmove($event, category, categoryPoint)"
+    @touchmove="touchmove($event)"
     draggable="true"
   >
-    <div class="accepted-icon">
-      <RejectedIcon v-if="categoryPoint.accepted === false" />
-      <QuestionmarkIcon v-if="categoryPoint.accepted === null" />
-      <AcceptedIcon v-if="categoryPoint.accepted === true" />
-    </div>
+    <component class="accepted-icon" :is="statusIcon" />
     <weight-badge :value="categoryPoint.weight" />
-
     <p class="category-point-name">{{ categoryPoint.name }}</p>
   </div>
 </template>
@@ -44,13 +35,25 @@ export default {
     selectedStoreId() {
       return this.$store.state.selectedStoreId;
     },
+    statusIcon() {
+      const { id } = this.categoryPoint;
+      const { accepted } = this.$store.state.results[id];
+      switch (accepted) {
+        case true:
+          return 'AcceptedIcon';
+        case false:
+          return 'RejectedIcon';
+        default:
+          return 'QuestionmarkIcon';
+      }
+    },
   },
   methods: {
-    touchstart(index, event) {
+    touchstart(event) {
       this.posX.start = event.touches[0].clientX;
       this.$refs.touchTarget.classList.remove('transformSlow');
     },
-    touchmove(event, _, categoryPoint) {
+    touchmove(event) {
       this.storeMoveLength(event);
       if (Math.abs(this.moveLength) > 25) {
         this.$refs.touchTarget.style.transform = `translate3d(${this.moveLength}px, 0px, 0px)`;
@@ -60,7 +63,7 @@ export default {
         const currentState = this.getCurrentState(accepted);
         if (currentState !== this.lastState) {
           this.lastState = currentState;
-          this.writeStatus(categoryPoint.newId, accepted);
+          this.writeStatus(this.categoryPoint.id, accepted);
         }
       }
     },
@@ -90,7 +93,7 @@ export default {
     },
     getCurrentState(accepted) {
       const storeId = this.$store.state.selectedStoreId;
-      const pointId = this.categoryPoint.newId;
+      const pointId = this.categoryPoint.id;
       return `${storeId}${pointId}${accepted}`;
     },
     isAccepted() {

@@ -2,9 +2,7 @@
   <div class="category-view">
     <div class="fixed">
       <div class="category-name">
-        <h1>
-          {{ getCategoryName($route.params.id) }}
-        </h1>
+        <h1>{{ category.name }}</h1>
       </div>
       <div class="status-bar">
         <span>Max. score : {{ score.available }}</span>
@@ -12,10 +10,9 @@
         <span>Splněno na {{ score.perc.toFixed(0) }}%</span>
       </div>
     </div>
-
     <div class="categories">
       <CategoryPoint
-        v-for="categoryPoint in categoryPoints($route.params.id)"
+        v-for="categoryPoint in categoryPoints"
         :key="categoryPoint.id"
         :categoryPoint="categoryPoint"
         :category="$route.params.id"
@@ -33,7 +30,7 @@
 </template>
 
 <script>
-import CategoryPoint from '@/components/CategoryPoint.vue';
+import CategoryPoint from '../components/CategoryPoint.vue';
 import HomeIcon from '../components/icons/HomeIcon.vue';
 import ArrowLeft from '../components/icons/ArrowLeft.vue';
 import ArrowRight from '../components/icons/ArrowRight.vue';
@@ -46,9 +43,6 @@ export default {
     ArrowRight,
   },
   methods: {
-    getCategoryName(categoryId) {
-      return this.$store.state.seed.names.categories[categoryId];
-    },
     prev() {
       const currentCategory = Number(this.$route.params.id);
       const prevCategory = currentCategory - 1;
@@ -64,22 +58,25 @@ export default {
     },
   },
   computed: {
+    category() {
+      const categoryId = this.$route.params.id;
+      return this.$store.state.categories.find(({ id }) => id === Number(categoryId));
+    },
     numOfCategories() {
-      return this.$store.getters.results2d.length;
+      return Object.keys(this.$store.state.categories).length;
     },
     categoryPoints() {
-      return (categoryId) => {
-        const currentCategory = this.$store.getters.results2d.find(
-          (category) => category.id === Number(categoryId),
-        );
-        return currentCategory.categoryPoints;
-      };
+      const { categoryPoints } = this.category;
+      return categoryPoints;
     },
     score() {
       const categoryId = Number(this.$route.params.id);
       console.log({ categoryId });
-      return this.$store.getters.achievedScoreInCategory(categoryId);
+      return this.$store.getters.score(categoryId);
     },
+  },
+  created() {
+    this.$store.commit('SET_RESULTS');
   },
 };
 </script>

@@ -2,7 +2,8 @@
   <header class="main-header" v-if="userIsLogged">
     <div class="total-score">
       <div class="title-small">Total score:</div>
-      <div class="perc">{{ $store.getters.totalScore.perc.toFixed(2) }}%</div>
+      <!-- <div class="perc">{{ $store.getters.score().perc.toFixed(2) }}%</div> -->
+      <div class="perc">{{ score }}%</div>
     </div>
     <div class="app-title">
       <img class="logo-small" src="@/assets/logo-small.png" alt="Hannah logo" />
@@ -21,6 +22,12 @@ export default {
   computed: {
     userIsLogged() {
       return this.$store.getters.isAuthenticated;
+    },
+    score() {
+      if (Object.keys(this.$store.state.results).length) {
+        return this.$store.getters.score().perc.toFixed(2);
+      }
+      return '';
     },
   },
   components: {

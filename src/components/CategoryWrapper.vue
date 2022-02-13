@@ -1,49 +1,19 @@
 <template>
-  <div class="kategory">
-    <div
-      @click="goToCategory(category.id)"
-      class="kategory-title"
-      :class="{ active: activeKategory === category.id }"
-    >
+  <div class="category">
+    <div @click="goToCategory(category.id)" class="category-title">
       {{ category.name }}
-      <span class="rt-idx">
-        {{ `${$store.getters.achievedScoreInCategory(category.id).perc.toFixed()}%` }}
-      </span>
+      <span class="score-perc"> {{ score.toFixed() }}% </span>
     </div>
-    <transition name="roll">
-      <div class="points" v-if="activeKategory === category.id">
-        <CategoryPoint
-          v-for="categoryPoint in category.categoryPoints"
-          :key="categoryPoint.id"
-          :categoryPoint="categoryPoint"
-          :category="category"
-        />
-      </div>
-    </transition>
   </div>
 </template>
 
 <script>
-import CategoryPoint from '@/components/CategoryPoint.vue';
-
 export default {
   name: 'CategoryWrapper',
-  components: { CategoryPoint },
   props: ['category'],
   computed: {
-    results() {
-      return this.$store.getters.results;
-    },
-    categories() {
-      return this.$store.state.categories;
-    },
-    activeKategory: {
-      get() {
-        return this.$store.state.activeCategory;
-      },
-      set(categoryId) {
-        this.$store.commit('SET_ACTIVE_CATEGORY', categoryId);
-      },
+    score() {
+      return this.$store.getters.score(this.category.id).perc;
     },
   },
   methods: {
@@ -55,7 +25,7 @@ export default {
 </script>
 
 <style>
-.kategory {
+.category {
   width: 100%;
   /* border: 2px solid black; */
   border-radius: 4px;
@@ -63,7 +33,7 @@ export default {
   background-color: #eee;
   overflow: hidden;
 }
-.kategory-title {
+.category-title {
   /* background-color: #564d51; */
   /* background-color: #262d2d; */
   background-color: #0b555a;
@@ -74,7 +44,7 @@ export default {
   transition: background-color 0.5s;
   position: relative;
 }
-.rt-idx {
+.score-perc {
   font-size: 1.1rem;
   position: absolute;
   top: 0.5rem;
