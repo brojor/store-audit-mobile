@@ -85,7 +85,7 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 .backdrop {
   position: fixed;
   top: 0;
