@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-expressions */
 describe('The Home Page', () => {
   it('Redirect to "only mobile view" if visited from desktop', () => {
     cy.viewport(1920, 1080);
@@ -47,13 +48,27 @@ describe('Login', () => {
   });
 });
 
-describe.skip('popis', () => {
-  it('redirect to categoryView', () => {
-    cy.get('#app > main > div:nth-child(3) > div').click();
-    cy.url().should('include', '/category/2');
+describe('HomeView is displayed fine', () => {
+  it('Header is displayed fine', () => {
+    cy.contains('.total-score', '0.00%');
+    cy.get('.logout').should('exist');
+    cy.get('.logo-container').contains('Store audit');
+  });
+  it('Main section is displayed fine', () => {
+    cy.get('#selectedStore').should('exist');
+    cy.get('.logo-container').contains('Store audit');
+    cy.get('.category').should('has.length', 11);
+    cy.contains('button', 'Odeslat');
+  });
+});
+
+describe('Category View', () => {
+  it('Po kliknutí na kategorii přesměruje na categoryView', () => {
+    cy.get('#Category-1').click();
+    cy.url().should('include', '/category/1');
   });
   it('swipeRight', () => {
-    cy.get('#app > div > div.categories > div:nth-child(1)')
+    cy.get('#C01P01')
       .as('point')
       .find('svg')
       .should('have.attr', 'name')
@@ -65,14 +80,13 @@ describe.skip('popis', () => {
       .trigger('touchmove', { touches: [{ clientX: 150 }] })
       .trigger('touchend', { force: true });
     cy.get('@point')
-      // .children()
-      // .eq(0)
       .find('svg')
       .should('have.attr', 'name')
       .and('eq', 'accepted');
 
     cy.window().then((win) => {
-      expect(win.__app__.$store.state.results.C02P01.accepted).to.be.true;
+      // eslint-disable-next-line no-underscore-dangle
+      expect(win.__app__.$store.state.results.C01P01.accepted).to.be.true;
     });
   });
   // it('accept all points', () => {

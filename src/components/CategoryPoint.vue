@@ -2,6 +2,7 @@
   <div
     class="point transformSlow"
     :ref="'touchTarget'"
+    :id="categoryPoint.id"
     @touchstart="touchstart($event)"
     @touchend="touchend()"
     @touchmove="touchmove($event)"

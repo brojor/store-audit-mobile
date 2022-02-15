@@ -1,5 +1,5 @@
 <template>
-  <div class="category">
+  <div class="category" :id="`Category-${category.id}`">
     <div @click="goToCategory(category.id)" class="category-title">
       {{ category.name }}
       <span class="score-perc"> {{ score.toFixed() }}% </span>
