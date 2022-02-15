@@ -22,18 +22,15 @@ const mutations = {
 };
 const actions = {
   login({ commit }, credentials) {
-    return AuthService.login(credentials)
-      .then(({ data }) => {
-        commit('SET_TOKEN', data.token);
-      })
-      .catch((err) => {
-        console.log(err.response.data);
-      });
+    return AuthService.login(credentials).then(({ data }) => {
+      commit('SET_TOKEN', data.token);
+    });
   },
   logout({ commit }) {
     console.log('odhlašuji');
     commit('SET_STORES', []);
     commit('SET_TOKEN', '');
+    localStorage.clear();
   },
 };
 
