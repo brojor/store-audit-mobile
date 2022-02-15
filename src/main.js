@@ -5,8 +5,13 @@ import router from './router';
 
 Vue.config.productionTip = false;
 
-new Vue({
+const app = new Vue({
   store,
   router,
   render: (h) => h(App),
 }).$mount('#app');
+
+if (window.Cypress) {
+  // eslint-disable-next-line no-underscore-dangle
+  window.__app__ = app;
+}
