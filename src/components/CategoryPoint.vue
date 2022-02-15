@@ -7,7 +7,7 @@
     @touchmove="touchmove($event)"
     draggable="true"
   >
-    <component class="accepted-icon" :is="statusIcon" />
+    <component class="icon" :is="statusIcon" />
     <weight-badge :value="categoryPoint.weight" />
     <p class="category-point-name">{{ categoryPoint.name }}</p>
   </div>
@@ -120,7 +120,7 @@ export default {
   justify-content: center; */
   font-size: 1.2rem;
 }
-.accepted-icon {
+.icon {
   position: absolute;
   top: 3px;
   left: 3px;
