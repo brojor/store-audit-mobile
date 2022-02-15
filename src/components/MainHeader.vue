@@ -1,17 +1,16 @@
 <template>
   <header class="main-header" v-if="userIsLogged">
     <div class="total-score">
-      <div class="title-small">Total score:</div>
-      <!-- <div class="perc">{{ $store.getters.score().perc.toFixed(2) }}%</div> -->
-      <div class="perc">{{ score }}%</div>
+      <p class="title-small">Total score:</p>
+      <p class="perc">{{ score }}%</p>
     </div>
-    <div class="app-title">
+    <div class="logo-container">
       <img class="logo-small" src="@/assets/logo-small.png" alt="Hannah logo" />
       <h1 class="header-title">Store audit</h1>
     </div>
-    <div class="log-out">
+    <button class="logout">
       <LogoutIcon @click.native="logout"></LogoutIcon>
-    </div>
+    </button>
   </header>
 </template>
 
@@ -63,7 +62,6 @@ export default {
   top: 0;
   width: 100%;
   z-index: 10;
-  /* background-color: #000; */
   background-color: #011414;
   display: flex;
   align-items: center;
@@ -71,7 +69,7 @@ export default {
   padding: 1.5rem;
   color: azure;
 }
-.app-title {
+.logo-container {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -86,9 +84,11 @@ export default {
   text-transform: uppercase;
   color: white;
 }
-.log-out {
+.logout {
   display: flex;
   align-items: center;
   justify-content: center;
+  background-color: transparent;
+  border: 0;
 }
 </style>
