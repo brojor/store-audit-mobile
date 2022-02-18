@@ -1,6 +1,6 @@
 <template>
   <BaseModal :isOpen="isOpen" @close="handleClose">
-     <component :is="$store.state.modal.component" @onClose="handleClose"/>
+    <component :is="$store.state.modal.component" @onClose="handleClose" />
   </BaseModal>
 </template>
 

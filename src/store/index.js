@@ -2,9 +2,9 @@ import Vue from 'vue';
 import Vuex from 'vuex';
 
 import Api from '../services/Api';
-import WriteComment from '../components/modal/WriteComment.vue';
-import UnfilledPoints from '../components/modal/UnfilledPoints.vue';
+
 import auth from './modules/auth';
+import modal from './modules/modal';
 
 const buildEmptyResults = (seed) => {
   const listOfIds = seed.map(({ categoryPoints }) => categoryPoints.map(({ id }) => id)).flat();
@@ -17,7 +17,6 @@ export default new Vuex.Store({
   state: {
     categories: JSON.parse(localStorage.getItem('seed')) || [],
     results: {},
-    modal: { isOpen: false, title: '', message: '' },
     commentedPoint: { categoryId: null, categoryPointId: null },
     activeCategory: null,
     stores: [],
@@ -38,21 +37,6 @@ export default new Vuex.Store({
       const localStorageEntry = JSON.parse(localStorage.getItem(state.selectedStoreId)) || {};
       localStorageEntry[categoryPointId] = { accepted, comment };
       localStorage.setItem(state.selectedStoreId, JSON.stringify(localStorageEntry));
-    },
-    OPEN_MODAL(state, { title, component, message = '' }) {
-      state.modal.isOpen = true;
-      state.modal.title = title;
-      state.modal.message = message;
-      state.modal.component = component;
-    },
-    CLOSE_MODAL(state) {
-      state.modal.isOpen = false;
-    },
-    SET_UNFILLED_POINTS(state, unfilledPoints) {
-      state.unfilledPoints = unfilledPoints;
-    },
-    SET_ACTIVE_CATEGORY(state, categoryId) {
-      state.activeCategory = categoryId;
     },
     RESET_RESULTS(state) {
       state.results = { ...state.emptyResults };
@@ -79,19 +63,6 @@ export default new Vuex.Store({
     changeStoreId({ commit }, id) {
       commit('SET_SELECTED_STORE', id);
       commit('SET_RESULTS');
-    },
-    addComment({ commit }) {
-      return new Promise((resolve) => {
-        commit('OPEN_MODAL', {
-          title: 'Přidání poznámky',
-          component: WriteComment,
-        });
-        commit('SET_PROMISE', resolve);
-      });
-    },
-    showUnfilledPointsWarning({ commit }, unfilledPoints) {
-      commit('OPEN_MODAL', { title: 'Nedokončená hodnocení: ', component: UnfilledPoints });
-      commit('SET_UNFILLED_POINTS', unfilledPoints);
     },
     getStores({ commit, state }) {
       return Api.get('/stores')
@@ -161,5 +132,5 @@ export default new Vuex.Store({
       }, []);
     },
   },
-  modules: { auth },
+  modules: { auth, modal },
 });

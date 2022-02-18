@@ -14,7 +14,7 @@ export default {
   },
   methods: {
     handleSubmit() {
-      this.$store.state.promise(this.message);
+      this.$store.state.modal.addProblemDescription(this.message);
       this.message = '';
       this.$store.commit('CLOSE_MODAL');
     },

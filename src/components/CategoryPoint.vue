@@ -84,7 +84,7 @@ export default {
       console.log('writeStatuuus', accepted);
       let comment;
       if (!accepted) {
-        comment = await this.$store.dispatch('addComment');
+        comment = await this.$store.dispatch('addProblemDescription');
       }
       this.$store.commit('WRITE_STATUS', {
         accepted,

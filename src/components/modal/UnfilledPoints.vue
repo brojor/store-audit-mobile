@@ -14,7 +14,7 @@
 
 <script>
 export default {
-  name: 'unfilled Points',
+  name: 'unfilled-points',
   computed: {
     listOfUnfilledItems() {
       return this.$store.getters.listOfUnfilledItems;
@@ -65,8 +65,8 @@ li {
 }
 
 .btn-w100 {
-    width: 100%;
-    padding: 1.5rem;
-    margin: 1rem 0;
+  width: 100%;
+  padding: 1.5rem;
+  margin: 1rem 0;
 }
 </style>
