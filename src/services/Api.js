@@ -1,5 +1,5 @@
 import axios from 'axios';
-
+// prettier-ignore
 const baseURL = process.env.NODE_ENV === 'development'
   ? process.env.VUE_APP_LOCAL_URL
   : 'https://store-audit.herokuapp.com';
@@ -31,3 +31,5 @@ if (localStorage.getItem('token')) {
 // );
 
 export default axiosInstance;
+// export const getListOfStores = () => axiosInstance.get('/stores');
+export const getListOfStores = () => axiosInstance.get('/stores');

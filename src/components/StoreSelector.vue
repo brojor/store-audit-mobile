@@ -8,21 +8,21 @@
 <script>
 export default {
   mounted() {
-    if (!this.$store.state.stores.length) {
+    if (!this.listOfStores.length) {
       this.$store.dispatch('getStores');
     }
   },
   computed: {
     selectedStore: {
       get() {
-        return this.$store.state.selectedStoreId;
+        return this.$store.state.stores.selectedStoreId;
       },
       set(id) {
         this.$store.dispatch('changeStoreId', id);
       },
     },
     listOfStores() {
-      return this.$store.state.stores;
+      return this.$store.state.stores.listOfStores;
     },
   },
 };

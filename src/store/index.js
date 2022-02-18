@@ -5,6 +5,7 @@ import Api from '../services/Api';
 
 import auth from './modules/auth';
 import modal from './modules/modal';
+import stores from './modules/stores';
 
 const buildEmptyResults = (seed) => {
   const listOfIds = seed.map(({ categoryPoints }) => categoryPoints.map(({ id }) => id)).flat();
@@ -17,10 +18,6 @@ export default new Vuex.Store({
   state: {
     categories: JSON.parse(localStorage.getItem('seed')) || [],
     results: {},
-    commentedPoint: { categoryId: null, categoryPointId: null },
-    activeCategory: null,
-    stores: [],
-    selectedStoreId: localStorage.getItem('selectedStoreId') || '',
   },
   mutations: {
     SET_CATEGORY_NAMES(state, seed) {
@@ -28,29 +25,20 @@ export default new Vuex.Store({
       localStorage.setItem('seed', JSON.stringify(seed));
     },
     SET_RESULTS(state) {
+      const { selectedStoreId } = state.stores;
       const emptyResults = buildEmptyResults(state.categories);
-      const savedResults = JSON.parse(localStorage.getItem(state.selectedStoreId)) || {};
+      const savedResults = JSON.parse(localStorage.getItem(selectedStoreId)) || {};
       state.results = { ...emptyResults, ...savedResults };
     },
     WRITE_STATUS(state, { accepted, categoryPointId, comment }) {
       state.results[categoryPointId] = { accepted, comment };
       const localStorageEntry = JSON.parse(localStorage.getItem(state.selectedStoreId)) || {};
       localStorageEntry[categoryPointId] = { accepted, comment };
-      localStorage.setItem(state.selectedStoreId, JSON.stringify(localStorageEntry));
+      localStorage.setItem(state.stores.selectedStoreId, JSON.stringify(localStorageEntry));
     },
     RESET_RESULTS(state) {
       state.results = { ...state.emptyResults };
       localStorage.setItem(state.selectedStoreId, JSON.stringify({}));
-    },
-    SET_STORES(state, stores) {
-      state.stores = stores;
-    },
-    SET_SELECTED_STORE(state, id) {
-      state.selectedStoreId = id;
-      localStorage.setItem('selectedStoreId', id);
-    },
-    SET_PROMISE(state, promise) {
-      state.promise = promise;
     },
   },
   actions: {
@@ -59,19 +47,6 @@ export default new Vuex.Store({
         commit('SET_CATEGORY_NAMES', seed);
         commit('SET_RESULTS');
       });
-    },
-    changeStoreId({ commit }, id) {
-      commit('SET_SELECTED_STORE', id);
-      commit('SET_RESULTS');
-    },
-    getStores({ commit, state }) {
-      return Api.get('/stores')
-        .then(({ data }) => {
-          commit('SET_STORES', data.stores);
-          const id = state.selectedStoreId || data.stores[0].id;
-          this.dispatch('changeStoreId', id);
-        })
-        .catch((err) => console.log(err));
     },
   },
   getters: {
@@ -132,5 +107,5 @@ export default new Vuex.Store({
       }, []);
     },
   },
-  modules: { auth, modal },
+  modules: { auth, modal, stores },
 });
