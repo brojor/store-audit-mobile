@@ -5,9 +5,9 @@
         <h1>{{ category.name }}</h1>
       </div>
       <div class="status-bar">
-        <span>Max. score : {{ score.available }}</span>
-        <span>Dosažené score: {{ score.achieved }}</span>
-        <span>Splněno na {{ score.perc.toFixed(0) }}%</span>
+        <span id="available-score">Max. score : {{ score.available }}</span>
+        <span id="achieved-score">Dosažené score: {{ score.achieved }}</span>
+        <span id="perc-fulfillment">Splněno na {{ score.perc.toFixed(0) }}%</span>
       </div>
     </div>
     <div class="categories">
@@ -20,9 +20,11 @@
       <div class="spacer"></div>
     </div>
     <div class="navigation">
-      <button @click="prev" :disabled="$route.params.id == 1"><ArrowLeft /></button>
+      <button id="prev-category" @click="prev" :disabled="$route.params.id == 1">
+        <ArrowLeft />
+      </button>
       <button class="home" @click="menu"><home-icon /></button
-      ><button @click="next" :disabled="$route.params.id == numOfCategories">
+      ><button id="next-category" @click="next" :disabled="$route.params.id == numOfCategories">
         <arrow-right />
       </button>
     </div>

@@ -1,7 +1,7 @@
 <template>
   <div class="wrapper">
     <textarea v-model="message" placeholder="Zde stručně popište problém.." rows="8"></textarea>
-    <button class="btn btn-small" @click="handleSubmit">Uložit</button>
+    <button id="submitModalBtn" class="btn btn-small" @click="handleSubmit">Uložit</button>
   </div>
 </template>
 
