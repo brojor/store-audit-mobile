@@ -31,8 +31,8 @@ export default new Vuex.Store({
       state.results = { ...emptyResults, ...savedResults };
     },
     WRITE_STATUS(state, { accepted, categoryPointId, comment }) {
-      state.results[categoryPointId] = { accepted, comment };
       const localStorageEntry = JSON.parse(localStorage.getItem(state.selectedStoreId)) || {};
+      state.results[categoryPointId] = { accepted, comment };
       localStorageEntry[categoryPointId] = { accepted, comment };
       localStorage.setItem(state.stores.selectedStoreId, JSON.stringify(localStorageEntry));
     },
@@ -43,7 +43,7 @@ export default new Vuex.Store({
   },
   actions: {
     getSeed({ commit }) {
-      return Api.get('/category-names').then(({ data: seed }) => {
+      Api.fetchSeed.then(({ data: seed }) => {
         commit('SET_CATEGORY_NAMES', seed);
         commit('SET_RESULTS');
       });

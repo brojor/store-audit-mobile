@@ -1,5 +1,4 @@
 /* eslint no-shadow: ["error", { "allow": ["state"] }] */
-import AuthService from '@/services/AuthService';
 import Api from '@/services/Api';
 
 const state = {
@@ -22,7 +21,7 @@ const mutations = {
 };
 const actions = {
   login({ commit }, credentials) {
-    return AuthService.login(credentials).then(({ data }) => {
+    return Api.login(credentials).then(({ data }) => {
       commit('SET_TOKEN', data.token);
     });
   },
