@@ -35,6 +35,7 @@ const sendResults = (payload) => axiosInstance.post('/results', payload);
 const login = (credentials) => axiosInstance.post('/auth/login', credentials);
 
 export default {
+  axiosInstance,
   getListOfStores,
   fetchSeed,
   sendResults,
