@@ -1,7 +1,7 @@
 <template>
   <div class="overlay" v-if="isOpen">
     <div class="modal">
-      <div class="model-title">{{$store.state.modal.title}}</div>
+      <div class="modal-title">{{$store.state.modal.title}}</div>
       <div class="modal-body">
         <slot />
       </div>
@@ -41,7 +41,7 @@ export default {
   overflow: hidden;
   box-shadow: 0px 5px 15px 6px rgba(0, 0, 0, 0.37);
 }
-.model-title {
+.modal-title {
   font-size: 1.8rem;
   padding: 1.5rem 0;
   /* margin-bottom: 1rem; */
