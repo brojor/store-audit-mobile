@@ -13,6 +13,11 @@ const axiosInstance = axios.create({
   },
 });
 
+if (window.Cypress) {
+  // eslint-disable-next-line no-underscore-dangle
+  window.$axiosInstance = axiosInstance;
+}
+
 if (localStorage.getItem('token')) {
   const token = localStorage.getItem('token');
   axiosInstance.defaults.headers.common.Authorization = `Bearer ${token}`;
