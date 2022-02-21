@@ -31,7 +31,8 @@ export default new Vuex.Store({
       state.results = { ...emptyResults, ...savedResults };
     },
     WRITE_STATUS(state, { accepted, categoryPointId, comment }) {
-      const localStorageEntry = JSON.parse(localStorage.getItem(state.selectedStoreId)) || {};
+      const { selectedStoreId } = state.stores;
+      const localStorageEntry = JSON.parse(localStorage.getItem(selectedStoreId)) || {};
       state.results[categoryPointId] = { accepted, comment };
       localStorageEntry[categoryPointId] = { accepted, comment };
       localStorage.setItem(state.stores.selectedStoreId, JSON.stringify(localStorageEntry));
