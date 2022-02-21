@@ -7,10 +7,13 @@ const state = { isOpen: false, title: '', message: '' };
 
 const getters = {};
 const mutations = {
-  OPEN_MODAL(state, { title, component, resolver = null }) {
+  OPEN_MODAL(state, {
+    title, component, resolver = null, message,
+  }) {
     console.log('OPEN_MODAL fired');
     state.isOpen = true;
     state.title = title;
+    state.message = message;
     state.component = component;
     state.addProblemDescription = resolver;
   },
