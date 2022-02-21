@@ -2,7 +2,7 @@
   <main>
     <StoreSelector />
     <CategoryWrapper v-for="category in categories" :key="category.id" :category="category" />
-    <button class="btn btn-w100" @click="sendResultsToServer">Odeslat</button>
+    <button id="sendResults" class="btn btn-w100" @click="sendResultsToServer">Odeslat</button>
     <RootModal></RootModal>
   </main>
 </template>
