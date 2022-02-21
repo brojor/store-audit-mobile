@@ -44,7 +44,7 @@ export default new Vuex.Store({
   },
   actions: {
     getSeed({ commit }) {
-      Api.fetchSeed.then(({ data: seed }) => {
+      Api.fetchSeed().then(({ data: seed }) => {
         commit('SET_CATEGORY_NAMES', seed);
         commit('SET_RESULTS');
       });
