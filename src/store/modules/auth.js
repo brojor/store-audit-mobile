@@ -1,5 +1,5 @@
 /* eslint no-shadow: ["error", { "allow": ["state"] }] */
-import Api from '@/services/Api';
+import Api from '../../services/Api';
 
 const state = {
   token: localStorage.getItem('token') || null,
@@ -16,7 +16,11 @@ const mutations = {
   SET_TOKEN(state, token) {
     state.token = token;
     localStorage.setItem('token', token);
-    Api.axiosInstance.defaults.headers.common.Authorization = `Bearer ${token}`;
+    if (token.length) {
+      Api.axiosInstance.defaults.headers.common.Authorization = `Bearer ${token}`;
+    } else {
+      delete Api.axiosInstance.defaults.headers.common.Authorization;
+    }
   },
 };
 const actions = {
