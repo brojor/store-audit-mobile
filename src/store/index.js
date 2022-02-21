@@ -104,7 +104,10 @@ export default new Vuex.Store({
             counter += 1;
           }
         });
-        return [...arr, { name: category.name, count: counter, id: category.id }];
+        if (counter > 0) {
+          return [...arr, { name: category.name, count: counter, id: category.id }];
+        }
+        return arr;
       }, []);
     },
   },
