@@ -1,5 +1,5 @@
 /* eslint no-shadow: ["error", { "allow": ["state"] }] */
-import { getListOfStores } from '../../services/Api';
+import Api from '../../services/Api';
 
 const state = {
   listOfStores: [],
@@ -21,7 +21,7 @@ const actions = {
     commit('SET_RESULTS');
   },
   getStores({ commit }) {
-    getListOfStores()
+    Api.getListOfStores()
       .then(({ data }) => {
         commit('SET_STORES', data.stores);
         const [firstStore] = data.stores;
