@@ -37,7 +37,6 @@ export default {
         moveStart: 25,
         actionStart: window.innerWidth / 4,
       },
-      lastState: '',
       animation: {
         accepted: false,
         rejected: false,
@@ -71,8 +70,7 @@ export default {
       return { transform: `translate3d(${this.xAxisShift}px, 0px, 0px)` };
     },
     isAccepted() {
-      const swipeDirection = this.move.length > 0 ? 'right' : 'left';
-      return swipeDirection === 'right';
+      return this.move.length > 0;
     },
     statusIcon() {
       const { id } = this.categoryPoint;
@@ -110,11 +108,6 @@ export default {
         comment,
       });
     },
-    getEventTrigger(accepted) {
-      const storeId = this.$store.state.selectedStoreId;
-      const pointId = this.categoryPoint.id;
-      return `${storeId}${pointId}${accepted}`;
-    },
     startAnimation() {
       const stateNow = this.isAccepted ? 'accepted' : 'rejected';
       this.animation[stateNow] = true;
@@ -128,13 +121,12 @@ export default {
       handler() {
         if (this.move.enoughToAction) {
           const accepted = this.isAccepted;
-          const eventTrigger = this.getEventTrigger(accepted);
-          if (eventTrigger !== this.lastTrigger) {
-            this.lastTrigger = eventTrigger;
+          const isAlreadyAccepted = this.$store.state.results[this.categoryPoint.id].accepted;
+          if (isAlreadyAccepted !== accepted) {
             this.startAnimation();
             setTimeout(() => {
               this.writeStatus(this.categoryPoint.id, accepted);
-            }, 500);
+            }, 100);
           }
         }
       },
