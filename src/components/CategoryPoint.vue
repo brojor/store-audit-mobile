@@ -1,8 +1,9 @@
 <template>
   <div
-    class="point transformSlow"
-    :ref="'touchTarget'"
+    class="point "
+    :class="{ transformSlow: !isDragged }"
     :id="categoryPoint.id"
+    :style="style"
     @touchstart="touchstart($event)"
     @touchend="touchend()"
     @touchmove="touchmove($event)"
@@ -21,20 +22,34 @@ import AcceptedIcon from './icons/acceptedIcon.vue';
 import WeightBadge from './weightBadge.vue';
 
 export default {
-  /* eslint-disable operator-linebreak */
   name: 'CategoryPoint',
   props: ['category', 'categoryPoint'],
   data() {
     return {
-      posX: {},
-      touchTarget: null,
-      moveLength: 0,
+      startPosition: 0,
+      actualPosition: 0,
+      isDragged: false,
+      threshold: 25,
       lastState: '',
     };
   },
   computed: {
-    selectedStoreId() {
-      return this.$store.state.selectedStoreId;
+    moveLength() {
+      return this.isDragged ? this.actualPosition - this.startPosition : 0;
+    },
+    xAxisShift() {
+      return Math.abs(this.moveLength) > this.threshold ? this.moveLength : 0;
+    },
+    style() {
+      return { transform: `translate3d(${this.xAxisShift}px, 0px, 0px)` };
+    },
+    thresholdExceeded() {
+      const threshold = window.innerWidth / 4;
+      return Math.abs(this.moveLength) > threshold;
+    },
+    isAccepted() {
+      const swipeDirection = this.moveLength > 0 ? 'right' : 'left';
+      return swipeDirection === 'right';
     },
     statusIcon() {
       const { id } = this.categoryPoint;
@@ -51,37 +66,17 @@ export default {
   },
   methods: {
     touchstart(event) {
-      this.posX.start = event.touches[0].clientX;
-      this.$refs.touchTarget.classList.remove('transformSlow');
+      this.startPosition = event.touches[0].clientX;
+      this.actualPosition = event.touches[0].clientX;
+      this.isDragged = true;
     },
     touchmove(event) {
-      this.storeMoveLength(event);
-      if (Math.abs(this.moveLength) > 25) {
-        this.$refs.touchTarget.style.transform = `translate3d(${this.moveLength}px, 0px, 0px)`;
-      }
-      if (this.thresholdExceeded()) {
-        const accepted = this.isAccepted();
-        const currentState = this.getCurrentState(accepted);
-        if (currentState !== this.lastState) {
-          this.lastState = currentState;
-          this.writeStatus(this.categoryPoint.id, accepted);
-        }
-      }
+      this.actualPosition = event.touches[0].clientX;
     },
     touchend() {
-      this.$refs.touchTarget.style.transform = 'translate3d(0px, 0px, 0px)';
-      this.$refs.touchTarget.classList.add('transformSlow');
-    },
-    storeMoveLength(event) {
-      const positionX = event.touches[0].clientX;
-      this.moveLength = positionX - this.posX.start;
-    },
-    thresholdExceeded() {
-      const threshold = window.innerWidth / 4;
-      return Math.abs(this.moveLength) > threshold;
+      this.isDragged = false;
     },
     async writeStatus(categoryPointId, accepted) {
-      console.log('writeStatuuus', accepted);
       let comment;
       if (!accepted) {
         comment = await this.$store.dispatch('addProblemDescription');
@@ -92,14 +87,22 @@ export default {
         comment,
       });
     },
-    getCurrentState(accepted) {
+    getEventTrigger(accepted) {
       const storeId = this.$store.state.selectedStoreId;
       const pointId = this.categoryPoint.id;
       return `${storeId}${pointId}${accepted}`;
     },
-    isAccepted() {
-      const swipeDirection = this.moveLength > 0 ? 'right' : 'left';
-      return swipeDirection === 'right';
+  },
+  watch: {
+    moveLength() {
+      if (this.thresholdExceeded) {
+        const accepted = this.isAccepted;
+        const eventTrigger = this.getEventTrigger(accepted);
+        if (eventTrigger !== this.lastTrigger) {
+          this.lastTrigger = eventTrigger;
+          this.writeStatus(this.categoryPoint.id, accepted);
+        }
+      }
     },
   },
   components: {
@@ -116,9 +119,6 @@ export default {
   position: absolute;
   top: 3px;
   right: 3px;
-  /* display: flex;
-  align-items: center;
-  justify-content: center; */
   font-size: 1.2rem;
 }
 .icon {
@@ -132,32 +132,13 @@ export default {
   position: relative;
   border-radius: 4px;
   margin: 2px 4px;
-
   color: black;
-  /* color: rgb(51, 51, 51); */
   background-color: #cfcfcf;
-  /* border: 2px solid #0087db; */
 }
 .category-point-name {
   margin-top: 0.75rem;
 }
 .transformSlow {
   transition: transform 0.25s;
-}
-.accepted {
-  /* color: rgb(56, 129, 56);
-  color: #02922b;
-  color: #000;
-  color: rgb(255, 255, 255);
-  background-color: #d0ddc7;
-  background-color: #2e7e5f; */
-  /* border: 1px solid #5ecf7e; */
-}
-.rejected {
-  /* color: #000;
-  color: #fff;
-  background-color: #edd4d4;
-  background-color: #a10000; */
-  /* border: 1px solid #e60001; */
 }
 </style>
