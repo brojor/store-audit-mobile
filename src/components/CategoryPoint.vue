@@ -29,26 +29,41 @@ export default {
       startPosition: 0,
       actualPosition: 0,
       isDragged: false,
-      threshold: 25,
+      threshold: {
+        moveStart: 25,
+        actionStart: window.innerWidth / 4,
+      },
       lastState: '',
     };
   },
   computed: {
-    moveLength() {
-      return this.isDragged ? this.actualPosition - this.startPosition : 0;
+    move() {
+      const length = this.isDragged ? this.actualPosition - this.startPosition : 0;
+      const enoughToMove = Math.abs(length) > this.threshold.moveStart;
+      const enoughToAction = Math.abs(length) > this.threshold.actionStart;
+      const enoughToStop = Math.abs(length) > this.threshold.actionStart * 1.2;
+      return {
+        length,
+        enoughToMove,
+        enoughToAction,
+        enoughToStop,
+      };
     },
     xAxisShift() {
-      return Math.abs(this.moveLength) > this.threshold ? this.moveLength : 0;
+      if (this.move.enoughToMove) {
+        let shiftX;
+        if (!this.move.enoughToStop) {
+          shiftX = this.move.length;
+        }
+        return shiftX;
+      }
+      return 0;
     },
     style() {
       return { transform: `translate3d(${this.xAxisShift}px, 0px, 0px)` };
     },
-    thresholdExceeded() {
-      const threshold = window.innerWidth / 4;
-      return Math.abs(this.moveLength) > threshold;
-    },
     isAccepted() {
-      const swipeDirection = this.moveLength > 0 ? 'right' : 'left';
+      const swipeDirection = this.move.length > 0 ? 'right' : 'left';
       return swipeDirection === 'right';
     },
     statusIcon() {
@@ -94,15 +109,18 @@ export default {
     },
   },
   watch: {
-    moveLength() {
-      if (this.thresholdExceeded) {
-        const accepted = this.isAccepted;
-        const eventTrigger = this.getEventTrigger(accepted);
-        if (eventTrigger !== this.lastTrigger) {
-          this.lastTrigger = eventTrigger;
-          this.writeStatus(this.categoryPoint.id, accepted);
+    move: {
+      handler() {
+        if (this.move.enoughToAction) {
+          const accepted = this.isAccepted;
+          const eventTrigger = this.getEventTrigger(accepted);
+          if (eventTrigger !== this.lastTrigger) {
+            this.lastTrigger = eventTrigger;
+            this.writeStatus(this.categoryPoint.id, accepted);
+          }
         }
-      }
+      },
+      deep: true,
     },
   },
   components: {
