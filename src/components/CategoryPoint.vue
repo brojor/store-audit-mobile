@@ -1,7 +1,11 @@
 <template>
   <div
     class="point "
-    :class="{ transformSlow: !isDragged }"
+    :class="{
+      transformSlow: !isDragged,
+      accepted: animation.accepted,
+      rejected: animation.rejected,
+    }"
     :id="categoryPoint.id"
     :style="style"
     @touchstart="touchstart($event)"
@@ -34,6 +38,10 @@ export default {
         actionStart: window.innerWidth / 4,
       },
       lastState: '',
+      animation: {
+        accepted: false,
+        rejected: false,
+      },
     };
   },
   computed: {
@@ -107,6 +115,13 @@ export default {
       const pointId = this.categoryPoint.id;
       return `${storeId}${pointId}${accepted}`;
     },
+    startAnimation() {
+      const stateNow = this.isAccepted ? 'accepted' : 'rejected';
+      this.animation[stateNow] = true;
+      setInterval(() => {
+        this.animation[stateNow] = false;
+      }, 1000);
+    },
   },
   watch: {
     move: {
@@ -116,7 +131,10 @@ export default {
           const eventTrigger = this.getEventTrigger(accepted);
           if (eventTrigger !== this.lastTrigger) {
             this.lastTrigger = eventTrigger;
-            this.writeStatus(this.categoryPoint.id, accepted);
+            this.startAnimation();
+            setTimeout(() => {
+              this.writeStatus(this.categoryPoint.id, accepted);
+            }, 500);
           }
         }
       },
@@ -133,6 +151,32 @@ export default {
 </script>
 
 <style lang="css" scoped>
+.accepted {
+  animation: accepted 1s;
+}
+@keyframes accepted {
+  from {
+    background-color: rgb(39, 177, 97);
+  }
+  to {
+    background-color: #cfcfcf;
+  }
+}
+.rejected {
+  animation: rejected 1s;
+}
+@keyframes rejected {
+  from {
+    background-color: #cfcfcf;
+  }
+  10% {
+    background-color: rgb(228, 19, 19);
+  }
+  to {
+    background-color: #cfcfcf;
+  }
+}
+
 .weight-icon {
   position: absolute;
   top: 3px;
