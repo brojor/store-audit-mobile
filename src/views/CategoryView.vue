@@ -88,7 +88,7 @@ export default {
   margin-top: 6rem;
   position: fixed;
   width: 100%;
-  z-index: 20;
+  z-index: 10;
   background-color: #011414;
 }
 .status-bar {
