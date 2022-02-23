@@ -26,13 +26,13 @@ const actions = {
     commit('OPEN_MODAL', { title: 'Nedokončená hodnocení: ', component: UnfilledPoints });
   },
   addProblemDescription({ commit }) {
-    return new Promise((resolve) => {
+    return new Promise((resolve) => setTimeout(() => {
       commit('OPEN_MODAL', {
         title: 'Přidání poznámky',
         component: WriteComment,
         resolver: resolve,
       });
-    });
+    }, 350));
   },
 };
 
