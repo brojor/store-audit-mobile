@@ -19,53 +19,24 @@
       />
       <div class="spacer"></div>
     </div>
-    <div class="navigation">
-      <button id="prev-category" @click="prev" :disabled="$route.params.id == 1">
-        <ArrowLeft />
-      </button>
-      <button class="home" @click="menu"><home-icon /></button
-      ><button id="next-category" @click="next" :disabled="$route.params.id == numOfCategories">
-        <arrow-right />
-      </button>
-    </div>
+    <navigation-bar />
   </div>
 </template>
 
 <script>
 import CategoryPoint from '../components/CategoryPoint.vue';
-import HomeIcon from '../components/icons/HomeIcon.vue';
-import ArrowLeft from '../components/icons/ArrowLeft.vue';
-import ArrowRight from '../components/icons/ArrowRight.vue';
+import NavigationBar from '../components/NavigationBar.vue';
 
 export default {
   components: {
     CategoryPoint,
-    HomeIcon,
-    ArrowLeft,
-    ArrowRight,
+    NavigationBar,
   },
-  methods: {
-    prev() {
-      const currentCategory = Number(this.$route.params.id);
-      const prevCategory = currentCategory - 1;
-      this.$router.push(`/category/${prevCategory}`);
-    },
-    menu() {
-      this.$router.push('/');
-    },
-    next() {
-      const currentCategory = Number(this.$route.params.id);
-      const nextCategory = currentCategory + 1;
-      this.$router.push(`/category/${nextCategory}`);
-    },
-  },
+
   computed: {
     category() {
       const categoryId = this.$route.params.id;
       return this.$store.state.categories.find(({ id }) => id === Number(categoryId));
-    },
-    numOfCategories() {
-      return Object.keys(this.$store.state.categories).length;
     },
     categoryPoints() {
       const { categoryPoints } = this.category;
@@ -89,7 +60,7 @@ export default {
   position: fixed;
   width: 100%;
   z-index: 10;
-  background-color: #011414;
+  background-color: #010b14;
 }
 .status-bar {
   color: #fff;
@@ -113,6 +84,7 @@ export default {
   flex-direction: column;
   flex-grow: 1;
   overflow: hidden;
+  background-color: rgb(22, 45, 63);
   /* flex-grow: 1; */
   /* overflow: scroll; */
 }
@@ -137,30 +109,6 @@ p {
   font-size: 1.5rem;
   color: #000;
   background-color: #fff;
-}
-button {
-  padding: 1rem;
-  /* margin: 0.5rem; */
-  outline: none;
-  border: none;
-  /* margin-bottom: -1rem; */
-  color: #fff;
-  background-color: transparent;
-}
-button:disabled {
-  color: rgb(105, 105, 105);
-}
-button.home {
-  padding: 0.5rem;
-}
-.navigation {
-  position: fixed;
-  bottom: 0;
-  width: 100%;
-  background-color: #001514;
-  display: flex;
-  justify-content: space-around;
-  align-items: center;
 }
 
 .spacer {
