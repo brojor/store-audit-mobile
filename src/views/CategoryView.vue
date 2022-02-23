@@ -36,6 +36,8 @@ export default {
 
 <style scoped>
 .category-view {
+  flex-grow: 1;
+  overflow: hidden;
   display: flex;
   flex-direction: column;
 }

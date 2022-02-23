@@ -17,11 +17,7 @@ export default {
 
 <style scoped>
 .category-header {
-  margin-top: 6rem;
-  position: fixed;
-  width: 100%;
-  z-index: 10;
-  background-color: #010b14;
+  /* background-color: #010b14; */
 }
 .status-bar {
   color: #fff;

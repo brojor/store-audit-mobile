@@ -162,7 +162,7 @@ export default {
     background-color: #cfcfcf;
   }
   10% {
-    background-color: rgb(228, 19, 19);
+    background-color: rgb(209, 75, 75);
   }
   to {
     background-color: #cfcfcf;

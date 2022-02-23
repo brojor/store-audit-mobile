@@ -55,10 +55,7 @@ export default {
 
 <style scoped>
 .navigation {
-  position: fixed;
-  bottom: 0;
-  width: 100%;
-  background-color: #000315;
+  /* background-color: #000315; */
   display: flex;
   justify-content: space-around;
   align-items: center;

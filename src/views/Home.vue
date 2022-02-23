@@ -70,10 +70,7 @@ export default {
 
 <style lang="css" scoped>
 main {
-  margin-top: 6.5rem;
-  position: relative;
   width: 100vw;
-  /* height: 100vh; */
   overflow-x: hidden;
   padding: 0.5rem;
 }
