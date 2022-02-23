@@ -1,15 +1,17 @@
 <template>
-  <main>
+  <div class="home-view">
     <StoreSelector />
-    <CategoryWrapper v-for="category in categories" :key="category.id" :category="category" />
+    <section class="list-of-categories">
+      <AuditCategory v-for="category in categories" :key="category.id" :category="category" />
+    </section>
     <button id="sendResults" class="btn btn-w100" @click="sendResultsToServer">Odeslat</button>
     <RootModal></RootModal>
-  </main>
+  </div>
 </template>
 
 <script>
 import RootModal from '@/components/modal/RootModal.vue';
-import CategoryWrapper from '../components/CategoryWrapper.vue';
+import AuditCategory from '../components/AuditCategory.vue';
 import Warning from '../components/modal/Warning.vue';
 import StoreSelector from '../components/StoreSelector.vue';
 import Api from '../services/Api';
@@ -18,7 +20,7 @@ export default {
   name: 'StoreAudit',
   components: {
     RootModal,
-    CategoryWrapper,
+    AuditCategory,
     StoreSelector,
   },
   data() {
@@ -69,10 +71,18 @@ export default {
 </script>
 
 <style lang="css" scoped>
-main {
-  width: 100vw;
-  overflow-x: hidden;
+.home-view {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
   padding: 0.5rem;
+}
+
+.list-of-categories {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 
 .btn-w100 {
