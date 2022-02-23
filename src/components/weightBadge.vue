@@ -36,7 +36,7 @@ export default {
   right: 4px;
   height: 19px;
   padding: 0 0.6rem;
-  background-color: #757575;
+  background-color: #a2a2a2;
   border-radius: 10px;
   display: flex;
   align-items: center;

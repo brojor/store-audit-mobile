@@ -5,7 +5,6 @@
     height="22"
     xmlns="http://www.w3.org/2000/svg"
     viewBox="0 0 20 20"
-    fill="#757575"
     color="#000"
   >
     <path
@@ -17,3 +16,8 @@
     ></path>
   </svg>
 </template>
+<style scoped>
+svg {
+  fill: #a2a2a2;
+}
+</style>
