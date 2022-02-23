@@ -10,27 +10,19 @@
         <span id="perc-fulfillment">Splněno na {{ score.perc.toFixed(0) }}%</span>
       </div>
     </div>
-    <div class="categories">
-      <CategoryPoint
-        v-for="categoryPoint in categoryPoints"
-        :key="categoryPoint.id"
-        :categoryPoint="categoryPoint"
-        :category="$route.params.id"
-      />
-      <div class="spacer"></div>
-    </div>
+    <categories-container :categoryPoints="category.categoryPoints" />
     <navigation-bar />
   </div>
 </template>
 
 <script>
-import CategoryPoint from '../components/CategoryPoint.vue';
+import CategoriesContainer from '../components/CategoriesContainer.vue';
 import NavigationBar from '../components/NavigationBar.vue';
 
 export default {
   components: {
-    CategoryPoint,
     NavigationBar,
+    CategoriesContainer,
   },
 
   computed: {
@@ -38,13 +30,8 @@ export default {
       const categoryId = this.$route.params.id;
       return this.$store.state.categories.find(({ id }) => id === Number(categoryId));
     },
-    categoryPoints() {
-      const { categoryPoints } = this.category;
-      return categoryPoints;
-    },
     score() {
       const categoryId = Number(this.$route.params.id);
-      console.log({ categoryId });
       return this.$store.getters.score(categoryId);
     },
   },
@@ -73,21 +60,8 @@ export default {
 .category-view {
   display: flex;
   flex-direction: column;
-  /* background-color: rgb(90, 90, 90); */
-  /* display: flex;
-  flex-direction: column; */
-  /* height: 94%; */
 }
-.categories {
-  margin-top: 14rem;
-  display: flex;
-  flex-direction: column;
-  flex-grow: 1;
-  overflow: hidden;
-  background-color: rgb(22, 45, 63);
-  /* flex-grow: 1; */
-  /* overflow: scroll; */
-}
+
 .category-name {
   background-color: #262d2d;
   background-color: #0b555a;
@@ -109,10 +83,5 @@ p {
   font-size: 1.5rem;
   color: #000;
   background-color: #fff;
-}
-
-.spacer {
-  height: 8rem;
-  /* background-color: yellow; */
 }
 </style>
