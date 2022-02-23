@@ -2,7 +2,7 @@
   <header class="main-header" v-if="userIsLogged">
     <div class="total-score">
       <p class="title-small">Total score:</p>
-      <p class="perc">{{ score }}%</p>
+      <p class="perc">{{ tweened.toFixed(2) }}%</p>
     </div>
     <div class="logo-container">
       <img class="logo-small" src="@/assets/logo-small.png" alt="Hannah logo" />
@@ -15,18 +15,24 @@
 </template>
 
 <script>
+import gsap from 'gsap';
 import LogoutIcon from './icons/Logout.vue';
 
 export default {
+  data() {
+    return {
+      tweened: 0,
+    };
+  },
   computed: {
     userIsLogged() {
       return this.$store.getters.isAuthenticated;
     },
     score() {
       if (Object.keys(this.$store.state.results).length) {
-        return this.$store.getters.score().perc.toFixed(2);
+        return this.$store.getters.score().perc;
       }
-      return '';
+      return 0;
     },
   },
   components: {
@@ -35,6 +41,11 @@ export default {
   methods: {
     logout() {
       this.$store.dispatch('logout').then(() => this.$router.push('/login'));
+    },
+  },
+  watch: {
+    score(n) {
+      gsap.to(this, { duration: 0.5, tweened: Number(n) || 0 });
     },
   },
 };

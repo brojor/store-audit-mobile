@@ -10,7 +10,6 @@ const mutations = {
   OPEN_MODAL(state, {
     title, component, resolver = null, message,
   }) {
-    console.log('OPEN_MODAL fired');
     state.isOpen = true;
     state.title = title;
     state.message = message;
