@@ -5,12 +5,10 @@
       <AuditCategory v-for="category in categories" :key="category.id" :category="category" />
     </section>
     <button id="sendResults" class="btn btn-w100" @click="sendResultsToServer">Odeslat</button>
-    <RootModal></RootModal>
   </div>
 </template>
 
 <script>
-import RootModal from '@/components/modal/RootModal.vue';
 import AuditCategory from '../components/AuditCategory.vue';
 import Warning from '../components/modal/Warning.vue';
 import StoreSelector from '../components/StoreSelector.vue';
@@ -19,16 +17,8 @@ import Api from '../services/Api';
 export default {
   name: 'StoreAudit',
   components: {
-    RootModal,
     AuditCategory,
     StoreSelector,
-  },
-  data() {
-    return {
-      hiddeAll: false,
-      password: '',
-      justEdited: {},
-    };
   },
   computed: {
     userIsLogged() {

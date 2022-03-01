@@ -4,7 +4,6 @@
       v-for="categoryPoint in categoryPoints"
       :key="categoryPoint.id"
       :categoryPoint="categoryPoint"
-      :category="$route.params.id"
     />
   </section>
 </template>
@@ -23,7 +22,6 @@ export default {
   flex-grow: 1;
   display: flex;
   flex-direction: column;
-  overflow-x: scroll;
-  /* background-color: rgb(22, 45, 63); */
+  overflow-x: hidden;
 }
 </style>

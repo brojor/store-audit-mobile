@@ -55,7 +55,6 @@ export default {
 
 <style scoped>
 .navigation {
-  /* background-color: #000315; */
   display: flex;
   justify-content: space-around;
   align-items: center;

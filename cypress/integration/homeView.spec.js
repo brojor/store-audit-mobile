@@ -27,7 +27,7 @@ describe('HomeView is displayed correct', () => {
       .should('has.length', 11)
       .each((category, i) => {
         cy.wrap(category).contains('span.score-perc', '0%');
-        cy.wrap(category).contains('.category-title', categories[i]);
+        cy.wrap(category).contains('.category-name', categories[i]);
       });
     cy.contains('button', 'Odeslat');
   });

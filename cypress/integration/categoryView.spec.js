@@ -82,6 +82,7 @@ describe('actions', () => {
   });
   it('Accepted point is accepted even after page reload', () => {
     cy.swipeRight('#C01P01');
+    cy.wait(100); // The state is written after an animation duration of 100ms
     cy.reload();
     cy.get('#C01P01')
       .find('svg')

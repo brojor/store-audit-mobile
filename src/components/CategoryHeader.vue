@@ -1,5 +1,5 @@
 <template>
-  <section class="category-header">
+  <section>
     <h1 class="category-name">{{ categoryName }}</h1>
     <div class="status-bar">
       <span id="available-score">Max. score : {{ score.available }}</span>
@@ -16,9 +16,6 @@ export default {
 </script>
 
 <style scoped>
-.category-header {
-  /* background-color: #010b14; */
-}
 .status-bar {
   color: #fff;
   display: flex;

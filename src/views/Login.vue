@@ -37,7 +37,6 @@
 <script>
 export default {
   name: 'login',
-
   data() {
     return {
       username: '',
@@ -128,9 +127,6 @@ input {
   border: none;
   margin: 1rem 0;
   border-radius: 0.4rem;
-}
-
-input {
   outline-color: rgb(131, 131, 131);
   width: 100%;
   padding: 10px 0;

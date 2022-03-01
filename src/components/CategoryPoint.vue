@@ -1,6 +1,6 @@
 <template>
   <div
-    class="point "
+    class="point"
     :class="{
       transformSlow: !isDragged,
       accepted: animation.accepted,
@@ -27,7 +27,7 @@ import WeightBadge from './weightBadge.vue';
 
 export default {
   name: 'CategoryPoint',
-  props: ['category', 'categoryPoint'],
+  props: ['categoryPoint'],
   data() {
     return {
       startPosition: 0,
@@ -46,18 +46,18 @@ export default {
   computed: {
     move() {
       const length = this.isDragged ? this.actualPosition - this.startPosition : 0;
-      const enoughToMove = Math.abs(length) > this.threshold.moveStart;
+      const enoughToShift = Math.abs(length) > this.threshold.moveStart;
       const enoughToAction = Math.abs(length) > this.threshold.actionStart;
       const enoughToStop = Math.abs(length) > this.threshold.actionStart * 1.2;
       return {
         length,
-        enoughToMove,
+        enoughToShift,
         enoughToAction,
         enoughToStop,
       };
     },
     xAxisShift() {
-      if (this.move.enoughToMove) {
+      if (this.move.enoughToShift) {
         let shiftX;
         if (!this.move.enoughToStop) {
           shiftX = this.move.length;
@@ -73,8 +73,7 @@ export default {
       return this.move.length > 0;
     },
     statusIcon() {
-      const { id } = this.categoryPoint;
-      const { accepted } = this.$store.state.results[id];
+      const { accepted } = this.$store.state.results[this.categoryPoint.id];
       switch (accepted) {
         case true:
           return 'AcceptedIcon';

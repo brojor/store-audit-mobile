@@ -27,7 +27,6 @@ export default {
   display: flex;
   justify-content: center;
   align-items: flex-start;
-
   background-color: rgba(0, 0, 0, 0.1);
   overflow: hidden;
   backdrop-filter: blur(3px);
@@ -44,7 +43,6 @@ export default {
 .modal-title {
   font-size: 1.8rem;
   padding: 1.5rem 0;
-  /* margin-bottom: 1rem; */
   font-weight: bold;
   background-color: #262d2d;
   color: white;

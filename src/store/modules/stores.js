@@ -5,7 +5,6 @@ const state = {
   listOfStores: [],
   selectedStoreId: localStorage.getItem('selectedStoreId') || '',
 };
-const getters = {};
 const mutations = {
   SET_STORES(state, stores) {
     state.listOfStores = stores;
@@ -33,7 +32,6 @@ const actions = {
 
 export default {
   state,
-  getters,
   mutations,
   actions,
 };

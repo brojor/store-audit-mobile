@@ -1,5 +1,5 @@
 <template>
-  <div class="wrapper">
+  <div>
     <textarea v-model="message" placeholder="Zde stručně popište problém.." rows="8"></textarea>
     <button id="submitModalBtn" class="btn btn-small" @click="handleSubmit">Uložit</button>
   </div>
@@ -27,7 +27,6 @@ textarea {
   border-radius: 5px;
   outline: none;
   padding: 1rem;
-  /*margin: 1rem;*/
   width: 90%;
   margin: 1rem 0;
 }

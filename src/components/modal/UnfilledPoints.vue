@@ -36,7 +36,6 @@ export default {
 .unfilled-points {
   overflow: scroll;
   max-height: 75vh;
-  /* padding-bottom: 2rem; */
 }
 h1 {
   font-size: 1.4rem;
@@ -57,11 +56,9 @@ li {
   background-color: #7d8e99;
   border: 1px solid #5f6468;
   color: #fff;
-
   border-radius: 4px;
   margin: 4px 0;
   padding: 1.5rem;
-  /* min-height: 5rem; */
 }
 
 .btn-w100 {

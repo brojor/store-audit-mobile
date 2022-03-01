@@ -1,11 +1,8 @@
 /* eslint no-shadow: ["error", { "allow": ["state"] }] */
 import WriteComment from '../../components/modal/WriteComment.vue';
 import UnfilledPoints from '../../components/modal/UnfilledPoints.vue';
-// import Warning from '../../components/modal/Warning.vue';
 
 const state = { isOpen: false, title: '', message: '' };
-
-const getters = {};
 const mutations = {
   OPEN_MODAL(state, {
     title, component, resolver = null, message,
@@ -37,7 +34,6 @@ const actions = {
 
 export default {
   state,
-  getters,
   mutations,
   actions,
 };
