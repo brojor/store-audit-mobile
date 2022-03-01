@@ -4,15 +4,15 @@
     <section class="list-of-categories">
       <AuditCategory v-for="category in categories" :key="category.id" :category="category" />
     </section>
-    <button id="sendResults" class="btn btn-w100" @click="sendResultsToServer">Odeslat</button>
+    <button id="sendResults" class="btn btn-w100" @click="sendResults">
+      Odeslat
+    </button>
   </div>
 </template>
 
 <script>
 import AuditCategory from '../components/AuditCategory.vue';
-import Warning from '../components/modal/Warning.vue';
 import StoreSelector from '../components/StoreSelector.vue';
-import Api from '../services/Api';
 
 export default {
   name: 'StoreAudit',
@@ -29,29 +29,8 @@ export default {
     },
   },
   methods: {
-    sendResultsToServer() {
-      const unfilled = this.$store.getters.listOfUnfilledItems;
-      if (unfilled.length) {
-        this.$store.dispatch('showUnfilledPointsWarning', unfilled);
-      } else {
-        const payload = {
-          storeId: this.$store.state.selectedStoreId,
-          results: this.$store.state.results,
-          date: new Date(),
-        };
-        Api.sendResults(payload)
-          .then(({ data }) => {
-            if (data.success) {
-              const message = 'Výsledky auditu byly úspěšně uloženy do databáze';
-              this.$store.commit('OPEN_MODAL', { title: 'Dokončeno', component: Warning, message });
-              this.$store.commit('RESET_RESULTS');
-            } else {
-              const { message } = data;
-              this.$store.commit('OPEN_MODAL', { title: 'Chyba', component: Warning, message });
-            }
-          })
-          .catch((err) => console.log(err));
-      }
+    sendResults() {
+      this.$store.dispatch('sendResultsToServer');
     },
   },
   mounted() {

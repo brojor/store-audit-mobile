@@ -7,6 +7,8 @@ import auth from './modules/auth';
 import modal from './modules/modal';
 import stores from './modules/stores';
 
+import Warning from '../components/modal/Warning.vue';
+
 const buildEmptyResults = (seed) => {
   const listOfIds = seed.map(({ categoryPoints }) => categoryPoints.map(({ id }) => id)).flat();
   return listOfIds.reduce((obj, id) => ({ ...obj, [id]: { accepted: null } }), {});
@@ -48,6 +50,31 @@ export default new Vuex.Store({
         commit('SET_CATEGORY_NAMES', seed);
         commit('SET_RESULTS');
       });
+    },
+    // eslint-disable-next-line
+    sendResults({ getters, dispatch, state, commit }) {
+      const { listOfUnfilledItems } = getters;
+      if (listOfUnfilledItems.length) {
+        dispatch('showUnfilledPointsWarning', listOfUnfilledItems);
+      } else {
+        const payload = {
+          storeId: state.selectedStoreId,
+          results: state.results,
+          date: new Date(),
+        };
+        Api.sendResults(payload)
+          .then(({ data }) => {
+            if (data.success) {
+              const message = 'Výsledky auditu byly úspěšně uloženy do databáze';
+              commit('OPEN_MODAL', { title: 'Dokončeno', component: Warning, message });
+              commit('RESET_RESULTS');
+            } else {
+              const { message } = data;
+              commit('OPEN_MODAL', { title: 'Chyba', component: Warning, message });
+            }
+          })
+          .catch((err) => console.log(err));
+      }
     },
   },
   getters: {
