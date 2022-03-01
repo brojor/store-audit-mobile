@@ -30,7 +30,7 @@ export default {
   },
   methods: {
     sendResults() {
-      this.$store.dispatch('sendResultsToServer');
+      this.$store.dispatch('sendResults');
     },
   },
   mounted() {
