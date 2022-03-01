@@ -25,19 +25,20 @@
 // Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
 
 Cypress.Commands.add('login', () => {
+  const { serverUrl } = Cypress.config();
   cy.intercept({
     method: 'GET',
-    url: 'http://192.168.1.133:5000/stores',
+    url: `${serverUrl}/stores`,
   }).as('getStores');
 
   cy.intercept({
     method: 'GET',
-    url: 'http://192.168.1.133:5000/category-names',
+    url: `${serverUrl}/category-names`,
   }).as('getCategoryNames');
 
   cy.request({
     method: 'POST',
-    url: 'http://localhost:5000/auth/login',
+    url: `${serverUrl}/auth/login`,
     body: {
       username: 'kaspav',
       password: 'heslo',

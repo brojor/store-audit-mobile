@@ -1,5 +1,6 @@
 {
     "baseUrl": "http://localhost:8080",
+    "serverUrl": "http://localhost:5000",
     "userAgent": "Mozilla/5.0 (Linux; Android 10; Mi 9T Pro) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/98.0.4758.87 Mobile Safari/537.36",
     "viewportWidth": 471,
     "viewportHeight": 914
