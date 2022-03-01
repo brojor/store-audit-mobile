@@ -1,8 +1,18 @@
 /* eslint no-shadow: ["error", { "allow": ["state"] }] */
 import WriteComment from '../../components/modal/WriteComment.vue';
 import UnfilledPoints from '../../components/modal/UnfilledPoints.vue';
+import Warning from '../../components/modal/Warning.vue';
 
-const state = { isOpen: false, title: '', message: '' };
+const components = {
+  WriteComment,
+  UnfilledPoints,
+  Warning,
+};
+
+const state = {
+  isOpen: false, title: '', message: '', component: {},
+};
+
 const mutations = {
   OPEN_MODAL(state, {
     title, component, resolver = null, message,
@@ -10,22 +20,23 @@ const mutations = {
     state.isOpen = true;
     state.title = title;
     state.message = message;
-    state.component = component;
+    state.component = components[component];
     state.addProblemDescription = resolver;
   },
   CLOSE_MODAL(state) {
     state.isOpen = false;
   },
 };
+
 const actions = {
   showUnfilledPointsWarning({ commit }) {
-    commit('OPEN_MODAL', { title: 'Nedokončená hodnocení: ', component: UnfilledPoints });
+    commit('OPEN_MODAL', { title: 'Nedokončená hodnocení: ', component: 'UnfilledPoints' });
   },
   addProblemDescription({ commit }) {
     return new Promise((resolve) => setTimeout(() => {
       commit('OPEN_MODAL', {
         title: 'Přidání poznámky',
-        component: WriteComment,
+        component: 'WriteComment',
         resolver: resolve,
       });
     }, 350));
