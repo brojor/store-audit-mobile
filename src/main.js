@@ -12,6 +12,5 @@ const app = new Vue({
 }).$mount('#app');
 
 if (window.Cypress) {
-  // eslint-disable-next-line no-underscore-dangle
   window.$vueApp = app;
 }

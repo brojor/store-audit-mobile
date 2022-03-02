@@ -14,7 +14,6 @@ const axiosInstance = axios.create({
 });
 
 if (window.Cypress) {
-  // eslint-disable-next-line no-underscore-dangle
   window.$axiosInstance = axiosInstance;
 }
 
