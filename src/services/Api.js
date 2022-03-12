@@ -1,9 +1,6 @@
 import axios from 'axios';
 
-// prettier-ignore
-const baseURL = process.env.NODE_ENV === 'development'
-  ? process.env.VUE_APP_LOCAL_URL
-  : process.env.VUE_APP_PRODUCTION_URL;
+const baseURL = 'https://store-audit.herokuapp.com/';
 
 const axiosInstance = axios.create({
   baseURL,
