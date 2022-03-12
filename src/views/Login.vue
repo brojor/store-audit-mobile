@@ -8,7 +8,6 @@
         <input
           @focus="removeErrorMessage"
           autofocus
-          class="rectangle"
           type="text"
           name="username"
           v-model="username"
@@ -19,7 +18,6 @@
       <label for="password">
         <input
           @focus="removeErrorMessage"
-          class="rectangle"
           type="password"
           name="password"
           v-model="password"
